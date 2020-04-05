@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Movienfo</string>
+    <string name="upcoming_movies">Upcoming movies</string>
+    <string name="trending_movies">Trending movies</string>
+    <string name="sort_by">sort_by</string>
+    <string name="popular">Show popular movies</string>
+    <string name="top_rated">Show top rated movies</string>
+    <string name="movie_info_placeholder" />
+    <string name="title_network_alert">Network Error</string>
+    <string name="message_network_alert">Make sure you are connected to Internet</string>
+    <string name="release_date_error">Release Date Missing</string>
 </resources>
