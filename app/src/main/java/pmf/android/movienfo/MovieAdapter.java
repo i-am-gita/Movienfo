@@ -62,7 +62,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         final Context context = holder.mView.getContext();
 
         holder.mMovie = movie;
-        holder.mMovieRelease.setText(movie.getReleaseDate());
+        String releaseYear = formatDate(movie.getReleaseDate());
+        holder.mMovieRelease.setText(releaseYear);
 
         String posterUrl = movie.getPosterPath();
 
@@ -99,6 +100,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         });
     }
 
+    private String formatDate(String date){
+        String[] splitedDate = date.split("-");
+        return splitedDate[0];
+    }
+
     @Override
     public int getItemCount() {
         return mMovies.size();
@@ -107,7 +113,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     @Override
     public void onViewRecycled(MovieViewHolder holder) {
         super.onViewRecycled(holder);
-        holder.cleanUp();
+        //holder.cleanUp();
     }
 
     public void add(List<Movie> movies) {

@@ -7,13 +7,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:background="@color/colorPrimary"
         android:elevation="3dp"
         android:padding="@dimen/card_view_margin"
+        android:layout_margin="8dp"
         card_view:cardCornerRadius="@dimen/card_radius">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@color/colorPrimary">
 
             <ImageView
                 android:id="@+id/movie_thumbnail"
@@ -29,8 +32,9 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/movie_thumbnail"
                 android:layout_centerInParent="true"
+                android:fontFamily="@font/aldrich"
                 android:singleLine="true"
-                android:text="@string/movie_info_placeholder"
-                android:textColor="@color/colorPrimary" />
+                android:background="@color/colorPrimary"
+                android:textColor="@color/colorSecond" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>

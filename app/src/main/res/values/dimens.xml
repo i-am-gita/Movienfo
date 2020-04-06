@@ -6,8 +6,8 @@
     <dimen name="app_bar_height">70dp</dimen>
 
     <!-- Home Page dimensions-->
-    <dimen name="section_title_left_margin">16dp</dimen>
-    <dimen name="section_title_top_margin">40dp</dimen>
+    <dimen name="section_title_left_margin">8dp</dimen>
+    <dimen name="section_title_top_margin">16dp</dimen>
 
     <!--Movie Details dimensions-->
     <dimen name="details_activity_vertical_margin">16dp</dimen>
@@ -38,7 +38,7 @@
     <dimen name="detail_vertical_padding">8dp</dimen>
     <dimen name="detail_horizontal_padding">16dp</dimen>
     <dimen name="card_view_margin">16dp</dimen>
-    <dimen name="card_radius">4dp</dimen>
+    <dimen name="card_radius">20dp</dimen>
     <dimen name="margin_start_release_date">8dp</dimen>
     <dimen name="margin_end_release_date">8dp</dimen>
     <dimen name="padding_release">8dp</dimen>

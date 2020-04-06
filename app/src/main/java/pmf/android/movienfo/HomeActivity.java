@@ -2,21 +2,33 @@ package pmf.android.movienfo;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.MenuItemCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toolbar;
 
 import java.io.IOException;
@@ -44,8 +56,7 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
     ArrayList<Movie> mUpcomingList;
     ArrayList<Movie> mTrending;
 
-    private MovieAdapter mUpcomingAdapter;
-    private MovieAdapter mTrendingAdapter;
+    private MovieAdapter mAdapter;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -54,7 +65,16 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_home);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setIcon(R.drawable.home_icon);
+
+
         ButterKnife.bind(this);
+
+
 
         if(savedInstanceState == null){
             if(NetworkUtils.networkStatus(HomeActivity.this))
@@ -68,12 +88,11 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
             }
         }
 
-        upcomingRecycle.setLayoutManager(new LinearLayoutManager(this,0,false));
-        trendingRecycle.setLayoutManager(new LinearLayoutManager(this,0, true));
-        mUpcomingAdapter = new MovieAdapter(new ArrayList<Movie>(), this);
-        mTrendingAdapter = new MovieAdapter(new ArrayList<Movie>(), this);
-        upcomingRecycle.setAdapter(mUpcomingAdapter);
-        trendingRecycle.setAdapter(mTrendingAdapter);
+        upcomingRecycle.setLayoutManager(new LinearLayoutManager(this,RecyclerView.HORIZONTAL,false));
+        trendingRecycle.setLayoutManager(new LinearLayoutManager(this,RecyclerView.HORIZONTAL, false));
+        mAdapter = new MovieAdapter(new ArrayList<Movie>(), this);
+        trendingRecycle.setAdapter(mAdapter);
+        upcomingRecycle.setAdapter(mAdapter);
 
     }
     @Override
@@ -88,13 +107,29 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
 
 
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.home_menu, menu);
+        MenuItem menuItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView.setQueryHint("Search");
+        int searchPlateId = searchView.getContext().getResources().getIdentifier("android:id/search_plate", null, null);
+        View searchPlate;
+        searchPlate = searchView.findViewById(searchPlateId);
+        if (searchPlate!=null) {
+            searchPlate.setBackgroundColor(Color.BLACK);
+            int searchTextId = searchPlate.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
+            TextView searchText = (TextView) searchPlate.findViewById(searchTextId);
+            if (searchText!=null) {
+                searchText.setTextColor(Color.parseColor("#ef1e3c"));
+                searchText.setHintTextColor(Color.parseColor("#ef1e3c"));
+            }
+        }
 
         return true;
-
     }
 
     @Override
@@ -146,11 +181,11 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
         protected void onPostExecute(Void  s) {
             super.onPostExecute(s);
 
-            mTrendingAdapter = new MovieAdapter(mTrending,HomeActivity.this);
-            trendingRecycle.setAdapter(mTrendingAdapter);
+            mAdapter = new MovieAdapter(mTrending,HomeActivity.this);
+            trendingRecycle.setAdapter(mAdapter);
 
-            mUpcomingAdapter = new MovieAdapter(mUpcomingList, HomeActivity.this);
-            upcomingRecycle.setAdapter(mUpcomingAdapter);
+            mAdapter = new MovieAdapter(mUpcomingList, HomeActivity.this);
+            upcomingRecycle.setAdapter(mAdapter);
 
         }
     }
