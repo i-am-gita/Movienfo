@@ -37,6 +37,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import pmf.android.movienfo.movie_details.MovieDetailsActivity;
 import pmf.android.movienfo.utilities.NetworkUtils;
 
 public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnItemClickListener, SearchView.OnQueryTextListener {
@@ -146,9 +147,9 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
 
     @Override
     public void send_details(Movie movie, int position) {
-       // Intent intent = new Intent(this, MovieDetailActivity.class);
-       // intent.putExtra(MovieDetailFragment.ARG_MOVIE, movie);
-      //  startActivity(intent);
+        Intent intent = new Intent(this, MovieDetailsActivity.class);
+        intent.putExtra("selectedMovie", movie);
+        startActivity(intent);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)

@@ -20,6 +20,11 @@
             android:name=".MovieSearchActivity"
             android:configChanges="screenLayout|orientation|screenSize">
         </activity>
+        <activity
+            android:name=".movie_details.MovieDetailsActivity"
+            android:configChanges="screenLayout|orientation|screenSize"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
+        </activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

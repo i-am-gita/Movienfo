@@ -131,11 +131,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                     });
         }
 
-        //App crashes if url is null
-        if(posterUrl == null){
-
-        }
-
         holder.mView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){

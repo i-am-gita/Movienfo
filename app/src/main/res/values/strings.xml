@@ -11,4 +11,5 @@
     <string name="message_network_alert">Make sure you are connected to Internet</string>
     <string name="release_date_error">Release Date Missing</string>
     <string name="results_for_query">"Results for "</string>
+    <string name="movie_user_rating">TMDB: %1$s/10</string>
 </resources>
