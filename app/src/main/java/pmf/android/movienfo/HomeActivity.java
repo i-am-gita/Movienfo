@@ -33,12 +33,13 @@ import android.widget.Toolbar;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pmf.android.movienfo.utilities.NetworkUtils;
 
-public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnItemClickListener {
+public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnItemClickListener, SearchView.OnQueryTextListener {
 
     private static final String TAG = HomeActivity.class.getSimpleName();
     String apiKey = BuildConfig.API_KEY;
@@ -55,6 +56,9 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
 
     ArrayList<Movie> mUpcomingList;
     ArrayList<Movie> mTrending;
+
+    String movieQuery;
+    ArrayList<Movie> searchResults;
 
     private MovieAdapter mAdapter;
 
@@ -90,7 +94,7 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
 
         upcomingRecycle.setLayoutManager(new LinearLayoutManager(this,RecyclerView.HORIZONTAL,false));
         trendingRecycle.setLayoutManager(new LinearLayoutManager(this,RecyclerView.HORIZONTAL, false));
-        mAdapter = new MovieAdapter(new ArrayList<Movie>(), this);
+        mAdapter = new MovieAdapter(new ArrayList<Movie>(), this, "movie_item_home");
         trendingRecycle.setAdapter(mAdapter);
         upcomingRecycle.setAdapter(mAdapter);
 
@@ -116,6 +120,7 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
         MenuItem menuItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) menuItem.getActionView();
         searchView.setQueryHint("Search");
+        searchView.setOnQueryTextListener(this);
         int searchPlateId = searchView.getContext().getResources().getIdentifier("android:id/search_plate", null, null);
         View searchPlate;
         searchPlate = searchView.findViewById(searchPlateId);
@@ -135,6 +140,7 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -143,6 +149,72 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
        // Intent intent = new Intent(this, MovieDetailActivity.class);
        // intent.putExtra(MovieDetailFragment.ARG_MOVIE, movie);
       //  startActivity(intent);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        if(query == null || query == "")
+            return false;
+        else{
+            movieQuery = query;
+            if(NetworkUtils.networkStatus(HomeActivity.this))
+                new MovieSearch().execute();
+            else{
+                AlertDialog.Builder dialog = new AlertDialog.Builder(HomeActivity.this);
+                dialog.setTitle(getString(R.string.title_network_alert));
+                dialog.setMessage(getString(R.string.message_network_alert));
+                dialog.setCancelable(false);
+                dialog.show();
+            }
+            return true;
+        }
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
+    }
+
+    //AsyncTask
+    public class MovieSearch extends AsyncTask<Void, Void, Void>{
+
+
+        @RequiresApi(api = Build.VERSION_CODES.M)
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            String movieSearchURL = "https://api.themoviedb.org/3/search/movie?api_key="+apiKey+"&language=en-US&query="+ movieQuery +"&page=1&include_adult=false";
+
+            searchResults = new ArrayList<>();
+
+            try{
+                if(NetworkUtils.networkStatus(HomeActivity.this)){
+                    searchResults = NetworkUtils.fetchData(movieSearchURL);
+                }else{
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(HomeActivity.this);
+                    dialog.setTitle(getString(R.string.title_network_alert));
+                    dialog.setMessage(getString(R.string.message_network_alert));
+                    dialog.setCancelable(false);
+                    dialog.show();
+                }
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void  s) {
+            super.onPostExecute(s);
+
+            Intent searchIntent = new Intent(HomeActivity.this, MovieSearchActivity.class);
+            searchIntent.putExtra("searchResults", searchResults);
+            searchIntent.putExtra("query", movieQuery);
+            startActivity(searchIntent);
+
+        }
     }
 
     //AsyncTask
@@ -181,10 +253,10 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
         protected void onPostExecute(Void  s) {
             super.onPostExecute(s);
 
-            mAdapter = new MovieAdapter(mTrending,HomeActivity.this);
+            mAdapter = new MovieAdapter(mTrending,HomeActivity.this, "movie_item_home");
             trendingRecycle.setAdapter(mAdapter);
 
-            mAdapter = new MovieAdapter(mUpcomingList, HomeActivity.this);
+            mAdapter = new MovieAdapter(mUpcomingList, HomeActivity.this, "movie_item_home");
             upcomingRecycle.setAdapter(mAdapter);
 
         }

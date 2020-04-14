@@ -39,7 +39,11 @@
     <dimen name="detail_horizontal_padding">16dp</dimen>
     <dimen name="card_view_margin">16dp</dimen>
     <dimen name="card_radius">20dp</dimen>
+    <dimen name="card_radius_query">3dp</dimen>
     <dimen name="margin_start_release_date">8dp</dimen>
     <dimen name="margin_end_release_date">8dp</dimen>
     <dimen name="padding_release">8dp</dimen>
+    <dimen name="text_size_title">17dp</dimen>
+    <dimen name="text_size_overview">14dp</dimen>
+    <dimen name="text_size_vote">17dp</dimen>
 </resources>

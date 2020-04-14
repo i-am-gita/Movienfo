@@ -10,4 +10,5 @@
     <string name="title_network_alert">Network Error</string>
     <string name="message_network_alert">Make sure you are connected to Internet</string>
     <string name="release_date_error">Release Date Missing</string>
+    <string name="results_for_query">"Results for "</string>
 </resources>
