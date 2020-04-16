@@ -49,4 +49,8 @@
     <dimen name="text_size_title_movie">24dp</dimen>
     <dimen name="text_size_sideinfo_movie">16dp</dimen>
     <dimen name="rating_margin_bottom">24dp</dimen>
+    <dimen name="button_size_theatres">60dp</dimen>
+    <dimen name="margin_top_map">20dp</dimen>
+    <dimen name="padding_button">10</dimen>
+
 </resources>

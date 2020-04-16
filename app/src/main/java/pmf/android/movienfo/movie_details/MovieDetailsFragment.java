@@ -1,16 +1,29 @@
 package pmf.android.movienfo.movie_details;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -24,7 +37,7 @@ import butterknife.ButterKnife;
 import pmf.android.movienfo.Movie;
 import pmf.android.movienfo.R;
 
-public class MovieDetailsFragment extends Fragment {
+public class MovieDetailsFragment extends Fragment{
 
     public static final String LOG_TAG = MovieDetailsFragment.class.getSimpleName();
 
@@ -52,6 +65,7 @@ public class MovieDetailsFragment extends Fragment {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -132,5 +146,4 @@ public class MovieDetailsFragment extends Fragment {
             mMovieRatingView.setVisibility(View.GONE);
         }
     }
-
 }

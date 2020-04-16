@@ -24,13 +24,14 @@ import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
 
 import pmf.android.movienfo.Movie;
+import pmf.android.movienfo.Theater;
 
 public class NetworkUtils {
 
     private static final String TAG = NetworkUtils.class.getSimpleName();
 
     public static ArrayList<Movie> fetchData(String url) throws IOException{
-        ArrayList<Movie> movies = new ArrayList<Movie>();
+        ArrayList<Movie> movies = new ArrayList<>();
         try{
             URL new_url = new URL(url);
             HttpURLConnection conn = (HttpURLConnection) new_url.openConnection();
@@ -38,12 +39,51 @@ public class NetworkUtils {
 
             InputStream inputStream = conn.getInputStream();
             String results = CharStreams.toString(new InputStreamReader(inputStream, Charsets.UTF_8));
-            parseJson(results,movies);
+            parseJson(results, movies);
             inputStream.close();
         }catch (IOException e){
             e.printStackTrace();
         }
         return movies;
+    }
+
+    public static ArrayList<Theater> fetchDataTheaters(String url) throws IOException{
+        ArrayList<Theater> theaters = new ArrayList<>();
+        try{
+            URL new_url = new URL(url);
+            HttpURLConnection conn = (HttpURLConnection) new_url.openConnection();
+            conn.connect();
+
+            InputStream inputStream = conn.getInputStream();
+            String results = CharStreams.toString(new InputStreamReader(inputStream, Charsets.UTF_8));
+            parseTheaters(results, theaters);
+            inputStream.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        return theaters;
+    }
+
+    public static void parseTheaters(String data, ArrayList<Theater> list){
+        try{
+            JSONObject mainObject = new JSONObject(data);
+
+            JSONArray resArray = mainObject.getJSONArray("results");
+
+            for(int i = 0; i < resArray.length(); i++){
+                JSONObject jsonObject = resArray.getJSONObject(i);
+                Theater theater = new Theater();
+                theater.setId(jsonObject.getString("id"));
+                theater.setName(jsonObject.getString("name"));
+                theater.setLat(Double.parseDouble(jsonObject.getJSONObject("geometry").getJSONObject("location").getString("lat")));
+                theater.setLon(Double.parseDouble(jsonObject.getJSONObject("geometry").getJSONObject("location").getString("lng")));
+
+                list.add(theater);
+            }
+        }catch(JSONException e){
+            e.printStackTrace();
+            Log.e(TAG, "Error occurred during JSON Parsing", e);
+        }
     }
 
     public static void parseJson(String data, ArrayList<Movie> list){
