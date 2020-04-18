@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "996192224038",
+    "firebase_url": "https://movienfo-db608.firebaseio.com",
+    "project_id": "movienfo-db608",
+    "storage_bucket": "movienfo-db608.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:996192224038:android:ac0d44975a5a49894e77e7",
+        "android_client_info": {
+          "package_name": "pmf.android.movienfo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "996192224038-hf6leqlliqd5pccgdl6tomsjnb9pn4rc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "pmf.android.movienfo",
+            "certificate_hash": "33be822bfd97fbf61faca9a238e8c17b20f62af3"
+          }
+        },
+        {
+          "client_id": "996192224038-v3upe5ed7j1ht7cor8otl89p11ud4866.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQ39nl2JiA9iC_xqJHQQw2aLfrkYmE1tQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "996192224038-v3upe5ed7j1ht7cor8otl89p11ud4866.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

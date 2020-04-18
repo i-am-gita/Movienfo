@@ -17,6 +17,10 @@
         android:background="@color/colorPrimary"
         android:orientation="horizontal">
 
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
         <ImageView
             android:id="@+id/search_movie_poster"
             android:layout_width="wrap_content"
@@ -24,6 +28,20 @@
             android:background="@drawable/query_movie_placeholder"
             android:layout_marginEnd="@dimen/card_view_margin"
             android:scaleType="fitXY" />
+
+            <ImageButton
+                android:id="@+id/remove_from_list"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:onClick="removeMovie"
+                android:scaleType="fitXY"
+                android:layout_alignRight="@+id/search_movie_poster"
+                android:layout_alignTop="@+id/search_movie_poster"
+                android:layout_margin="@dimen/margin_poster_button"
+                android:background="@drawable/favourite_icon_20px"
+                />
+
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"

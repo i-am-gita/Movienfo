@@ -28,18 +28,28 @@
              sign the APK for publishing.
              You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCEUvu0LwFxYcGnmsOTVzwz6Hd7gjvpeXc" />
 
-
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
+        -->
         <activity
             android:name=".HomeActivity"
-            android:configChanges="screenLayout|orientation|screenSize"></activity>
+            android:configChanges="screenLayout|orientation|screenSize" />
         <activity
             android:name=".MovieSearchActivity"
-            android:configChanges="screenLayout|orientation|screenSize"></activity>
+            android:configChanges="screenLayout|orientation|screenSize" />
         <activity
             android:name=".movie_details.MovieDetailsActivity"
             android:configChanges="screenLayout|orientation|screenSize"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"></activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -54,9 +64,6 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDqCVRF02vBoHPLSXV2VL2DloslV1v0JO0" />
     </application>
 
 </manifest>

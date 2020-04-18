@@ -10,20 +10,21 @@
     app:showAsAction="ifRoom|collapseActionView"/>
 
     <item
+        android:id="@+id/user_pick"
         android:icon="@drawable/ic_sort_black_24dp"
-        android:title="@string/sort_by"
+        android:title="@string/userList"
         app:showAsAction="ifRoom">
         <menu>
-            <group
-                android:id="@+id/menu_sort_by"
-                android:checkableBehavior="single">
                 <item
-                    android:id="@+id/sort_by_popular"
-                    android:title="@string/popular" />
+                    android:checkable="true"
+                    android:checked="false"
+                    android:id="@+id/watchlist"
+                    android:title="@string/watchlist" />
                 <item
-                    android:id="@+id/sort_by_top_rated"
-                    android:title="@string/top_rated" />
-            </group>
+                    android:checkable="true"
+                    android:checked="false"
+                    android:id="@+id/favourites"
+                    android:title="@string/favourites" />
         </menu>
     </item>
 </menu>

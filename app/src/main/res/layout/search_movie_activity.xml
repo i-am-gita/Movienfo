@@ -19,19 +19,6 @@
             tools:context=".MovieSearchActivity">
 
             <TextView
-                android:id="@+id/results_for_query_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/section_title_left_margin"
-                android:layout_marginLeft="@dimen/section_title_left_margin"
-                android:layout_marginTop="@dimen/section_title_top_margin"
-                android:fontFamily="@font/aldrich"
-                android:text="@string/results_for_query"
-                android:textColor="@color/movie_overview_text_color"
-                android:textIsSelectable="false"
-                android:textSize="24sp" />
-
-            <TextView
                 android:id="@+id/results_for_query"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -39,7 +26,7 @@
                 android:layout_marginLeft="@dimen/section_title_left_margin"
                 android:layout_marginTop="@dimen/section_title_top_margin"
                 android:fontFamily="@font/aldrich"
-                android:textColor="@color/movie_overview_text_color"
+                android:textColor="@color/colorSecond"
                 android:textIsSelectable="false"
                 android:textSize="24sp"
                 android:textStyle="bold" />

@@ -7,7 +7,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ScaleDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -20,13 +24,24 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -39,7 +54,7 @@ import pmf.android.movienfo.R;
 
 public class MovieDetailsFragment extends Fragment{
 
-    public static final String LOG_TAG = MovieDetailsFragment.class.getSimpleName();
+    public static final String TAG = MovieDetailsFragment.class.getSimpleName();
 
     private Movie mMovie;
 
@@ -61,6 +76,15 @@ public class MovieDetailsFragment extends Fragment{
     @BindViews({R.id.rating_first_star, R.id.rating_second_star, R.id.rating_third_star, R.id.rating_fourth_star, R.id.rating_fifth_star})
     List<ImageView> ratingStarViews;
 
+    @BindView(R.id.favorite_button)
+    Button favoriteButton;
+
+    @BindView(R.id.watchlist_button)
+    Button watchlistButton;
+
+    private boolean isFav;
+    private boolean inWatch;
+
     public MovieDetailsFragment(){
 
     }
@@ -73,7 +97,6 @@ public class MovieDetailsFragment extends Fragment{
         if (getArguments().containsKey("selectedMovie")) {
             mMovie = getArguments().getParcelable("selectedMovie");
         }
-        setHasOptionsMenu(true);
     }
 
     @Override
@@ -112,9 +135,92 @@ public class MovieDetailsFragment extends Fragment{
                 .into(mMoviePosterView);
 
         update_rating_stars();
-        Log.d(LOG_TAG, "Current selected movie id is: " + String.valueOf(mMovie.getId()));
+        Log.d(TAG, "Current selected movie id is: " + String.valueOf(mMovie.getId()));
+
+        if(getArguments().containsKey("favorite")){
+            isFav = getArguments().getBoolean("favorite");
+        }
+
+        if(getArguments().containsKey("watchlist")){
+            inWatch = getArguments().getBoolean("watchlist");
+        }
+
+        favoriteButton.setText("FAVORITES");
+            if(isFav) {
+                Drawable left = getResources().getDrawable(R.drawable.favourite_icon_20px);
+                favoriteButton.setCompoundDrawablesWithIntrinsicBounds(left, null , null, null);
+            }
+            else {
+                Drawable left = getResources().getDrawable(R.drawable.unfavourite_icon_20px);
+                favoriteButton.setCompoundDrawablesWithIntrinsicBounds(left, null, null, null);
+            }
+
+        watchlistButton.setText("WATCHLIST");
+            if(inWatch) {
+                Drawable left = getResources().getDrawable(R.drawable.add_icon_20px);
+                watchlistButton.setCompoundDrawablesWithIntrinsicBounds(left, null , null, null);
+            }
+            else {
+                Drawable left = getResources().getDrawable(R.drawable.remove_icon_20px);
+                watchlistButton.setCompoundDrawablesWithIntrinsicBounds(left, null , null, null);
+            }
+
+        setHasOptionsMenu(true);
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+
+        favoriteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isFav){
+                    deleteMovieFirebase(ref, "favorites");
+                    Drawable left = getResources().getDrawable(R.drawable.unfavourite_icon_20px);
+                    favoriteButton.setCompoundDrawablesWithIntrinsicBounds(left, null , null, null);
+                    isFav = false;
+                }else{
+                    addMovieFirebase(ref, "favorites");
+                    Drawable left = getResources().getDrawable(R.drawable.favourite_icon_20px);
+                    favoriteButton.setCompoundDrawablesWithIntrinsicBounds(left, null , null, null);
+                    isFav = true;
+                }
+            }
+        });
+
+        watchlistButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(inWatch){
+                    deleteMovieFirebase(ref, "watchlist");
+                    Drawable left = getResources().getDrawable(R.drawable.remove_icon_20px);
+                    watchlistButton.setCompoundDrawablesWithIntrinsicBounds(left, null , null, null);
+                    inWatch = false;
+                }else{
+                    addMovieFirebase(ref, "watchlist");
+                    Drawable left = getResources().getDrawable(R.drawable.add_icon_20px);
+                    watchlistButton.setCompoundDrawablesWithIntrinsicBounds(left, null , null, null);
+                    inWatch = true;
+                }
+            }
+        });
 
         return rootView;
+    }
+
+    private void  addMovieFirebase(DatabaseReference ref, String collection){
+        if(collection.equals("favorites")) {
+            ref.child("favorites").child(mMovie.getId()+"").setValue(mMovie);
+        }else{
+            ref.child("watchlist").child(mMovie.getId()+"").setValue(mMovie);
+        }
+    }
+
+    private void deleteMovieFirebase(DatabaseReference ref, String collection){
+        Query movieQuery;
+        if(collection.equals("favorites")){
+            ref.child("favorites").child(mMovie.getId().toString()).removeValue();
+        }else{
+            ref.child("watchlist").child(mMovie.getId().toString()).removeValue();
+        }
     }
 
     private String formatDateString(String date){

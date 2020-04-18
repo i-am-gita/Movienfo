@@ -26,10 +26,12 @@ import android.os.Looper;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -59,10 +61,16 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -81,17 +89,22 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
     @BindView(R.id.trending_movies_recyclerView)
     RecyclerView trendingRecycle;
 
+    @BindView(R.id.popular_movies_recyclerView)
+    RecyclerView mostPopularRecycle;
+
+    @BindView(R.id.top_movies_recyclerView)
+    RecyclerView topRatedRecycle;
+
     @BindView(R.id.find_theaters_button)
     Button theatersButton;
 
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
 
-    String upcomingMoviesURL;
-    String trendingMoviesURL;
-
     ArrayList<Movie> mUpcomingList;
     ArrayList<Movie> mTrending;
+    ArrayList<Movie> mTopRated;
+    ArrayList<Movie> mMostPopular;
 
     String movieQuery;
     ArrayList<Movie> searchResults;
@@ -101,10 +114,13 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
     private int PERMISSION_ID = 44;
     FusedLocationProviderClient mFusedLocationClient;
     private double lat,lon;
-    String places_api_key = "AIzaSyDqCVRF02vBoHPLSXV2VL2DloslV1v0JO0";
+    String places_api_key = "AIzaSyADGEldZct1-7AwWAtE6ckVxVtm04bHMnw";
     ArrayList<Theater> theaters;
     private GoogleMap mMap;
     SupportMapFragment mapFragment;
+
+    ArrayList<Movie> userFavorites;
+    ArrayList<Movie> userWatchlist;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -137,9 +153,14 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
 
         upcomingRecycle.setLayoutManager(new LinearLayoutManager(this,RecyclerView.HORIZONTAL,false));
         trendingRecycle.setLayoutManager(new LinearLayoutManager(this,RecyclerView.HORIZONTAL, false));
+        topRatedRecycle.setLayoutManager(new LinearLayoutManager(this,RecyclerView.HORIZONTAL, false));
+        mostPopularRecycle.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
+
         mAdapter = new MovieAdapter(new ArrayList<Movie>(), this, "movie_item_home");
         trendingRecycle.setAdapter(mAdapter);
         upcomingRecycle.setAdapter(mAdapter);
+        topRatedRecycle.setAdapter(mAdapter);
+        mostPopularRecycle.setAdapter(mAdapter);
 
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -148,7 +169,54 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
 
         theatersButton.setOnClickListener(this);
 
+
+        getFirebaseData(FirebaseDatabase.getInstance().getReference());
+
+
+
     }
+
+    public void getFirebaseData(DatabaseReference reference){
+
+        //Fetching list of favourite movies from Firebase
+        userFavorites = new ArrayList<>();
+        Query getFavoriteMoviesQuery = reference.child("favorites");
+        getFavoriteMoviesQuery.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot favoriteSnapshot : dataSnapshot.getChildren()){
+                    userFavorites.add(favoriteSnapshot.getValue(Movie.class));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.w(TAG, "Error", databaseError.toException());
+                Toast.makeText(getApplicationContext() , "Failed to load favorite movies from database.",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //Fetching watchlist from Firebase
+        userWatchlist = new ArrayList<>();
+        Query getWatchlistQuery = reference.child("watchlist");
+        getWatchlistQuery.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot watchlistSnapshot : dataSnapshot.getChildren()){
+                    userWatchlist.add(watchlistSnapshot.getValue(Movie.class));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.w(TAG, "Error", databaseError.toException());
+                Toast.makeText(getApplicationContext() , "Failed to load watchlist from database.",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -166,23 +234,13 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
                 dialog.show();
             }
 
-      //  if(theaters != null && !theaters.isEmpty()){
-        //    MapFragment mapFragment = (MapFragment) getFragmentManager()
-          //          .findFragmentById(R.id.map);
-           // mapFragment.getMapAsync(this);
-        //}
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-       // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat,lon), 17));
         mMap.setOnCameraMoveListener(this);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-      //  for (Theater th : theaters) {
-      //      LatLng coordinates = new LatLng(th.getLat(), th.getLon());
-      //      mMap.addMarker(new MarkerOptions().position(coordinates).title(th.getName()));
-      //  }
     }
 
     @Override
@@ -299,6 +357,8 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
         MenuItem menuItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) menuItem.getActionView();
         searchView.setQueryHint("Search");
+        searchView.setSubmitButtonEnabled(true);
+        searchView.setSelected(true);
         searchView.setOnQueryTextListener(this);
         int searchPlateId = searchView.getContext().getResources().getIdentifier("android:id/search_plate", null, null);
         View searchPlate;
@@ -308,25 +368,45 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
             int searchTextId = searchPlate.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
             TextView searchText = (TextView) searchPlate.findViewById(searchTextId);
             if (searchText!=null) {
-                searchText.setTextColor(Color.parseColor("#ef1e3c"));
-                searchText.setHintTextColor(Color.parseColor("#ef1e3c"));
+                searchText.setTextColor(Color.parseColor("#303F9F"));
+                searchText.setHintTextColor(Color.parseColor("#303F9F"));
             }
         }
-
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-
-        return super.onOptionsItemSelected(item);
+        switch (item.getItemId()){
+            case R.id.user_pick:
+                SubMenu subMenu = item.getSubMenu();
+                if(subMenu.getItem().isChecked())
+                    return onOptionsItemSelected(subMenu.getItem());
+                else
+                    return false;
+            case R.id.watchlist:
+                Intent watchlistIntent = new Intent(this, MovieSearchActivity.class);
+                watchlistIntent.putParcelableArrayListExtra("list", userWatchlist);
+                watchlistIntent.putExtra("stringData","watchlist");
+                startActivity(watchlistIntent);
+                return true;
+            case R.id.favourites:
+                Intent favIntent = new Intent(this, MovieSearchActivity.class);
+                favIntent.putParcelableArrayListExtra("list", userFavorites);
+                favIntent.putExtra("stringData","favourites");
+                startActivity(favIntent);
+                return true;
+            default:
+                return true;
+        }
     }
 
     @Override
     public void send_details(Movie movie, int position) {
         Intent intent = new Intent(this, MovieDetailsActivity.class);
         intent.putExtra("selectedMovie", movie);
+        intent.putParcelableArrayListExtra("favourites", userFavorites);
+        intent.putParcelableArrayListExtra("watchlist", userWatchlist);
         startActivity(intent);
     }
 
@@ -357,7 +437,6 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
 
 
 
-    //AsyncTask
     public class MovieSearch extends AsyncTask<Void, Void, Void>{
 
 
@@ -391,8 +470,8 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
             super.onPostExecute(s);
 
             Intent searchIntent = new Intent(HomeActivity.this, MovieSearchActivity.class);
-            searchIntent.putExtra("searchResults", searchResults);
-            searchIntent.putExtra("query", movieQuery);
+            searchIntent.putExtra("list", searchResults);
+            searchIntent.putExtra("stringData", movieQuery);
             startActivity(searchIntent);
 
         }
@@ -451,14 +530,21 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
 
             String upcomingMoviesURL = "https://api.themoviedb.org/3/movie/upcoming?api_key="+apiKey+"&language=en-US&page=1";
             String trendingMoviesURL = "https://api.themoviedb.org/3/movie/now_playing?api_key="+apiKey+"&language=en-US&page=1";
+            String topRatedURL = "https://api.themoviedb.org/3/movie/top_rated?api_key="+apiKey+"&language=en-US&page=1";
+            String mostPopularURL = "https://api.themoviedb.org/3/movie/popular?api_key="+apiKey+"&language=en-US&page=1";
+
 
             mTrending = new ArrayList<>();
             mUpcomingList = new ArrayList<>();
+            mTopRated = new ArrayList<>();
+            mMostPopular = new ArrayList<>();
 
             try{
                 if(NetworkUtils.networkStatus(HomeActivity.this)){
                     mTrending = NetworkUtils.fetchData(trendingMoviesURL);
                     mUpcomingList = NetworkUtils.fetchData(upcomingMoviesURL);
+                    mTopRated = NetworkUtils.fetchData(topRatedURL);
+                    mMostPopular = NetworkUtils.fetchData(mostPopularURL);
                 }else{
                     AlertDialog.Builder dialog = new AlertDialog.Builder(HomeActivity.this);
                     dialog.setTitle(getString(R.string.title_network_alert));
@@ -482,6 +568,12 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
 
             mAdapter = new MovieAdapter(mUpcomingList, HomeActivity.this, "movie_item_home");
             upcomingRecycle.setAdapter(mAdapter);
+
+            mAdapter = new MovieAdapter(mMostPopular, HomeActivity.this, "movie_item_home");
+            mostPopularRecycle.setAdapter(mAdapter);
+
+            mAdapter = new MovieAdapter(mTopRated, HomeActivity.this, "movie_item_home");
+            topRatedRecycle.setAdapter(mAdapter);
 
         }
     }

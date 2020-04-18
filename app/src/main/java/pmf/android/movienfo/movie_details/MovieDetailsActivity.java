@@ -1,26 +1,38 @@
 package pmf.android.movienfo.movie_details;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
-import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
-import butterknife.BindView;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+
 import butterknife.ButterKnife;
 import pmf.android.movienfo.Movie;
 import pmf.android.movienfo.R;
 
 public class MovieDetailsActivity extends AppCompatActivity {
 
-    public static final String LOG_TAG = MovieDetailsActivity.class.getSimpleName();
+    public static final String TAG = MovieDetailsActivity.class.getSimpleName();
 
+    public static ArrayList<Movie> userFavorites;
+    public static ArrayList<Movie> userWatchlist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,19 +50,126 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         if(savedInstanceState == null){
             Bundle arguments = new Bundle();
-            arguments.putParcelable("selectedMovie", getIntent().getParcelableExtra("selectedMovie"));
+            Movie selected = getIntent().getParcelableExtra("selectedMovie");
+            arguments.putParcelable("selectedMovie", selected);
+            userWatchlist = getIntent().getParcelableArrayListExtra("watchlist");
+            userFavorites = getIntent().getParcelableArrayListExtra("favourites");
+
+
+            manageDatabase(FirebaseDatabase.getInstance().getReference().child("watchlist"), FirebaseDatabase.getInstance().getReference().child("favourites"));
+
+            arguments.putBoolean("favorite", isFavorite(selected));
+            arguments.putBoolean("watchlist", inWatchlist(selected));
 
             MovieDetailsFragment fragment = new MovieDetailsFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.movie_detail_container, fragment)
                     .commit();
-
-
         }
-
-
     }
+
+    private void manageDatabase(DatabaseReference watchRef, DatabaseReference favRef){
+
+        //Listener for watchlist
+        ChildEventListener watchlistEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Log.d(TAG, "Added new movie to watchlist: " + dataSnapshot.getKey());
+                Movie wMovie = dataSnapshot.getValue(Movie.class);
+                userWatchlist.add(wMovie);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Log.d(TAG, "Changed movie from the watchlist: " + dataSnapshot.getKey());
+
+                Movie wMovie = dataSnapshot.getValue(Movie.class);
+                for(Movie wathlistM : userWatchlist){
+                    if(wathlistM.getId().equals(wMovie.getId())) wathlistM = wMovie;
+                }
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG, "Deleted movie from watchlist: " + dataSnapshot.getKey());
+
+                Movie wMovie = dataSnapshot.getValue(Movie.class);
+                if(userWatchlist.contains(wMovie)) userWatchlist.remove(wMovie);
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.w(TAG, "Error", databaseError.toException());
+                Toast.makeText(getApplicationContext() , "Failed to load watchlist.",
+                        Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        watchRef.addChildEventListener(watchlistEventListener);
+
+        ChildEventListener favoritesEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Log.d(TAG, "Added new favorite movie: " + dataSnapshot.getKey());
+
+                Movie fMovie = dataSnapshot.getValue(Movie.class);
+                userFavorites.add(fMovie);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Log.d(TAG, "Changed favorite movie: " + dataSnapshot.getKey());
+
+                Movie fMovie = dataSnapshot.getValue(Movie.class);
+                for(Movie fav : userFavorites){
+                    if(fav.getId().equals(fMovie.getId())) fav = fMovie;
+                }
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG, "Deleted favorite movie: " + dataSnapshot.getKey());
+
+                Movie fMovie = dataSnapshot.getValue(Movie.class);
+                if(userFavorites.contains(fMovie)) userFavorites.remove(fMovie);
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.w(TAG, "Error", databaseError.toException());
+                Toast.makeText(getApplicationContext() , "Failed to load list of favorite movies.",
+                        Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        favRef.addChildEventListener(favoritesEventListener);
+    }
+
+    private boolean isFavorite(Movie movie){
+        if(userFavorites.contains(movie))
+            return true;
+        else
+            return false;
+    }
+
+    private boolean inWatchlist(Movie movie){
+        if(userWatchlist.contains(movie))
+            return true;
+        else
+            return false;
+    }
+
     protected void checkBuildVersion(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(Color.TRANSPARENT);

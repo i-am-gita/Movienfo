@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -17,6 +18,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -34,10 +40,19 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     private String layoutName;
 
+    private String listType;
+
     private OnItemClickListener mOnItemClickListener;
 
     public interface OnItemClickListener {
         void send_details(Movie movie, int position);
+    }
+
+    public MovieAdapter(ArrayList<Movie> movies, OnItemClickListener mItemClickListener, String layoutName, String listType){
+        this.mMovies = movies;
+        this.mOnItemClickListener = mItemClickListener;
+        this.layoutName = layoutName;
+        this.listType = listType;
     }
 
     public MovieAdapter(ArrayList<Movie> movies, OnItemClickListener mItemClickListener, String layoutName){
@@ -45,6 +60,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         this.mOnItemClickListener = mItemClickListener;
         this.layoutName = layoutName;
     }
+
 
 
 
@@ -86,6 +102,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                     return false;
                 }
             });
+
+            if(!listType.equals("favourites") && !listType.equals("watchlist")) {
+                holder.removeFromList.setVisibility(View.GONE);
+            }else{
+                holder.removeFromList.setContentDescription(movie.getId().toString());
+            }
 
             Picasso.get()
                     .load(posterUrl)
@@ -197,6 +219,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         @Nullable
         @BindView(R.id.overviewScroll)
         ScrollView overviewScroll;
+
+        @Nullable
+        @BindView(R.id.remove_from_list)
+        ImageButton removeFromList;
 
         public MovieViewHolder(View view){
             super(view);

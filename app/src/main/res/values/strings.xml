@@ -14,4 +14,7 @@
     <string name="movie_user_rating">TMDB: %1$s/10</string>
     <string name="title_activity_maps">Map</string>
     <string name="find_theaters">You can watch movies in almost every theater across the globe. If you want to find out location of the nearest one to you, please click the button on the right.</string>
+    <string name="watchlist">Watchlist</string>
+    <string name="favourites">Favourites</string>
+    <string name="userList">User pick</string>
 </resources>
