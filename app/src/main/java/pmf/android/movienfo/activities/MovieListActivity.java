@@ -2,21 +2,19 @@ package pmf.android.movienfo.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
-
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.ArrayList;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pmf.android.movienfo.R;
@@ -46,10 +44,9 @@ public class MovieListActivity extends AppCompatActivity implements MovieAdapter
         setContentView(R.layout.activity_movies_list);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(false);
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setIcon(R.drawable.logo_render_movienfo);
-
         ButterKnife.bind(this);
 
         Intent wantedData = getIntent();
@@ -69,48 +66,47 @@ public class MovieListActivity extends AppCompatActivity implements MovieAdapter
         }
 
        movieListRecycle.setLayoutManager(new LinearLayoutManager(this,RecyclerView.VERTICAL,false));
-        movieListRecycle.setOnTouchListener(new View.OnTouchListener() {
-
-            public boolean onTouch(View v, MotionEvent event) {
-                findViewById(R.id.overviewScroll).getParent().requestDisallowInterceptTouchEvent(false);
-                return false;
-            }
+       movieListRecycle.setOnTouchListener((v, event) -> {
+            findViewById(R.id.overviewScroll).getParent().requestDisallowInterceptTouchEvent(false);
+            return false;
         });
-        mAdapter = new MovieAdapter(this, list, R.layout.item_movie_list);
+        mAdapter = new MovieAdapter(this, list, R.layout.item_movie_list, movieListType);
+        mAdapter.setOnItemClickListener(this);
         movieListRecycle.setAdapter(mAdapter);
 
     }
 
     @Override
     public void sendDetails(Movie movie, int position) {
-        if(movieListType.equals("favourites") || movieListType.equals("watchlist")) {
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-            if (movieListType.equals("favourites")) {
-                ref.child("favorites").child(movie.getId().toString()).removeValue();
 
-            } else {
-                ref.child("watchlist").child(movie.getId().toString()).removeValue();
-            }
-            Movie forDel = null;
-            for (Movie m : list) {
-                if (m.getId().toString().equals(movie.getId().toString())) forDel = m;
-            }
-            if (forDel != null) list.remove(forDel);
-
-            Intent favIntent = new Intent(this, MovieListActivity.class);
-            favIntent.putParcelableArrayListExtra("list", list);
-            favIntent.putExtra("stringData", movieListType);
-
-            finish();
-            startActivity(favIntent);
-
-        }else{
-            Intent movieIntent = new Intent(this, MovieDetailsActivity.class);
-            movieIntent.putExtra("selectedMovie", movie);
-            movieIntent.putParcelableArrayListExtra("favourites", getIntent().getParcelableArrayListExtra("userFavs"));
-            movieIntent.putParcelableArrayListExtra("watchlist", getIntent().getParcelableArrayListExtra("userWatch"));
-            startActivity(movieIntent);
+        switch (movieListType){
+            case "favourites":
+                FirebaseDatabase.getInstance().getReference().child("favorites").child(movie.getId().toString()).removeValue();
+                //??
+                list.remove(movie);
+                refreshMovieList();
+                break;
+            case "watchlist":
+                FirebaseDatabase.getInstance().getReference().child("watchlist").child(movie.getId().toString()).removeValue();
+                list.remove(movie);
+                refreshMovieList();
+                break;
+            default:
+                Intent movieIntent = new Intent(this, MovieDetailsActivity.class);
+                movieIntent.putExtra("selectedMovie", movie);
+                movieIntent.putParcelableArrayListExtra("favourites", getIntent().getParcelableArrayListExtra("userFavs"));
+                movieIntent.putParcelableArrayListExtra("watchlist", getIntent().getParcelableArrayListExtra("userWatch"));
+                startActivity(movieIntent);
+                break;
         }
 }
+
+    private void refreshMovieList(){
+        Intent favIntent = new Intent(this, MovieListActivity.class);
+        favIntent.putParcelableArrayListExtra("list", list);
+        favIntent.putExtra("stringData", movieListType);
+        finish();
+        startActivity(favIntent);
+    }
 
 }

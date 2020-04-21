@@ -13,6 +13,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9cc7f327-9f03-4810-b1d1-c2a8f9a39d9d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/layouts/home/layout/app_bar_home.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.6.4/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.6.4/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.6.4/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.6.4/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.6.4/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.6.4/fileHashes/fileHashes.bin" afterDir="false" />
@@ -23,58 +24,23 @@
       <change beforePath="$PROJECT_DIR$/.gradle/5.6.4/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.6.4/javaCompile/javaCompile.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.6.4/javaCompile/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.6.4/javaCompile/taskHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/app/app.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/debug/res/values/google_maps_api.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/debug/res/values/google_maps_api.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/HomeActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/activities/HomeActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/activities/MainActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/Movie.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/model/Movie.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/MovieAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/adapters/MovieAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/MovieSearchActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/activities/MovieListActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/Theater.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/model/Theater.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/movie_details/MovieDetailsActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/activities/movie_details/MovieDetailsActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/movie_details/MovieDetailsFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/activities/movie_details/MovieDetailsFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/utilities/NetworkUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/utilities/NetworkUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-v24/image_placeholder_home.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/add_icon_20px.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawables/icons/drawable/icon_add.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/favourite_icon_20px.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawables/icons/drawable/icon_favourite.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/home_icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawables/logos/drawable/logo_render_movienfo.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/ic_launcher_background.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawables/icons/drawable/ic_launcher_background.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/ic_sort_black_24dp.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawables/icons/drawable/icon_menu_home.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/ic_star_border_red_24dp.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawables/icons/drawable/icon_star_border.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/ic_star_half_red_24dp.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawables/icons/drawable/icon_star_half.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/ic_star_red_24dp.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawables/icons/drawable/icon_star.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawables/icons/drawable/icon_launcher_movienfo.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/image_placeholder.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawables/images/drawable/image_placeholder.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/logo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/logo_render.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawables/logos/drawable/logo_render.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/nearby_theaters_button.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawables/buttons/drawable/button_nearby_theaters.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/query_movie_placeholder.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawables/images/drawable/image_placeholder_movie_lists.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/remove_icon_20px.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawables/icons/drawable/icon_remove.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/search_icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawables/icons/drawable/icon_search.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/unfavourite_icon_20px.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawables/icons/drawable/icon_unfavourite.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_home.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layouts/home/layout/activity_home.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layouts/home/layout/activity_loading_screen.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/movie_details.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layouts/movie_info/layout/item_movie_details.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/movie_details_activity.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layouts/movie_info/layout/activity_movie_details.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/movie_item_home.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layouts/home/layout/item_movie_home.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/rating.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layouts/movie_info/layout/rating_stars.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/search_movie_activity.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layouts/movie_lists/layout/activity_movies_list.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/search_movie_item.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layouts/movie_lists/layout/item_movie_list.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/menu/home_menu.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/menu/menu_home.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-hdpi/ic_launcher.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-mdpi/ic_launcher.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-xhdpi/ic_launcher.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-xxhdpi/ic_launcher.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/activities/HomeActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/activities/HomeActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/activities/MovieListActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/activities/MovieListActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/adapters/MovieAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/adapters/MovieAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawables/icons/drawable/icon_add.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawables/icons/drawable/icon_add.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawables/icons/drawable/icon_favourite.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawables/icons/drawable/icon_favourite.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawables/icons/drawable/icon_launcher_movienfo.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawables/icons/drawable/icon_launcher_movienfo.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawables/icons/drawable/icon_remove.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawables/icons/drawable/icon_remove.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawables/icons/drawable/icon_search.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawables/icons/drawable/icon_search.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawables/icons/drawable/icon_unfavourite.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawables/icons/drawable/icon_unfavourite.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawables/logos/drawable/logo_render.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawables/logos/drawable/logo_render.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawables/logos/drawable/logo_render_movienfo.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawables/logos/drawable/logo_render_movienfo.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layouts/movie_lists/layout/activity_movies_list.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layouts/movie_lists/layout/activity_movies_list.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layouts/movie_lists/layout/item_movie_list.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layouts/movie_lists/layout/item_movie_list.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/menu/menu_home.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/menu/menu_home.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/dimens.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/dimens.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/styles.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/styles.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -105,6 +71,7 @@
         <option value="layoutResourceFile" />
         <option value="resourceFile" />
         <option value="Class" />
+        <option value="layoutResourceFile_vertical" />
       </list>
     </option>
   </component>
@@ -117,7 +84,7 @@
     <property name="DeviceAndSnapshotComboBoxAction.selectionTime" value="2020-04-16T14:20:47.294Z" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="android.sdk.path" value="$USER_HOME$/Android/Sdk" />
-    <property name="last_directory_selection" value="$PROJECT_DIR$/app/src/main/res/drawable" />
+    <property name="last_directory_selection" value="$PROJECT_DIR$/app/src/main/res/layouts/home" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/app/src/main/res/drawable" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.17" />

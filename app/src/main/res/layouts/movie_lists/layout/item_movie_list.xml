@@ -47,8 +47,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-
-
             <TextView
                 android:id="@+id/search_movie_title"
                 style="@style/TextAppearance.AppCompat.Headline"
@@ -61,13 +59,13 @@
 
             <ScrollView
                 android:id="@+id/overviewScroll"
-                android:layout_width="match_parent"
-                android:layout_height="110dp">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/search_movie_overview"
                     android:layout_width="wrap_content"
-                    android:layout_height="110dp"
+                    android:layout_height="wrap_content"
                     android:fontFamily="@font/aldrich"
                     android:textSize="@dimen/text_size_overview"
                     android:background="@color/colorPrimary"

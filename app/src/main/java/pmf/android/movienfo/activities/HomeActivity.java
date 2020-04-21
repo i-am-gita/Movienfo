@@ -26,6 +26,16 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -50,15 +60,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pmf.android.movienfo.BuildConfig;
@@ -156,17 +157,19 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
     }
 
     private void initializeMoviesList() {
-        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
-
-        nowPlayingRecycle.setLayoutManager(linearLayoutManager);
-        upcomingRecycle.setLayoutManager(linearLayoutManager);
-        topRatedRecycle.setLayoutManager(linearLayoutManager);
-        mostPopularRecycle.setLayoutManager(linearLayoutManager);
+        nowPlayingRecycle.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
+        upcomingRecycle.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
+        topRatedRecycle.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
+        mostPopularRecycle.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
 
         popularMoviesAdapter = new MovieAdapter(this, Collections.emptyList(), R.layout.item_movie_home);
+        popularMoviesAdapter.setOnItemClickListener(this);
         topRatedMoviesAdapter = new MovieAdapter(this, Collections.emptyList(), R.layout.item_movie_home);
+        topRatedMoviesAdapter.setOnItemClickListener(this);
         nowPlayingMoviesAdapter = new MovieAdapter(this, Collections.emptyList(), R.layout.item_movie_home);
+        nowPlayingMoviesAdapter.setOnItemClickListener(this);
         upcomingMoviesAdapter = new MovieAdapter(this, Collections.emptyList(), R.layout.item_movie_home);
+        upcomingMoviesAdapter.setOnItemClickListener(this);
 
         upcomingRecycle.setAdapter(upcomingMoviesAdapter);
         nowPlayingRecycle.setAdapter(nowPlayingMoviesAdapter);
