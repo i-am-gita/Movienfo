@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="movie_grid_title_padding">16dp</dimen>
-    <integer name="number_of_grid_columns">2</integer>
-    <string name="poster_url">http://image.tmdb.org/t/p/w342</string>
+
+    <dimen name="text_size_section_title">24sp</dimen>
+
+
     <dimen name="app_bar_height">200dp</dimen>
 
     <!-- Home Page dimensions-->
@@ -15,47 +16,25 @@
     <dimen name="details_movie_poster_width">140dp</dimen>
     <dimen name="details_movie_poster_height">210dp</dimen>
     <dimen name="details_movie_poster_padding_right">16dp</dimen>
-    <dimen name="details_movie_poster_vertical_padding">16dp</dimen>
     <dimen name="detail_title_left_padding">4dp</dimen>
     <dimen name="detail_title_bottom_margin">4dp</dimen>
-    <dimen name="favorite_button_vertical_margin">16dp</dimen>
 
-    <dimen name="button_height">36dp</dimen>
-    <dimen name="button_horizontal_padding">16dp</dimen>
-    <dimen name="button_vertical_padding">0dp</dimen>
-    <dimen name="button_vertical_margin">16dp</dimen>
-
-    <dimen name="details_horizontal_margin">16dp</dimen>
-    <dimen name="details_movie_date_vertical_padding">16dp</dimen>
     <dimen name="movie_overview_padding_top">16dp</dimen>
 
-    <!--Trailer-->
-    <dimen name="trailer_list_vertical_padding">16dp</dimen>
-    <dimen name="trailer_width_for_detail">150dp</dimen>
-    <dimen name="trailer_height_for_detail">100dp</dimen>
-
-    <!--Reviews-->
-    <dimen name="detail_vertical_padding">8dp</dimen>
-    <dimen name="detail_horizontal_padding">16dp</dimen>
     <dimen name="card_view_margin">16dp</dimen>
     <dimen name="card_radius">20dp</dimen>
     <dimen name="card_radius_query">3dp</dimen>
-    <dimen name="margin_start_release_date">8dp</dimen>
-    <dimen name="margin_end_release_date">8dp</dimen>
-    <dimen name="padding_release">8dp</dimen>
     <dimen name="text_size_title">17dp</dimen>
     <dimen name="text_size_overview">14dp</dimen>
     <dimen name="text_size_vote">17dp</dimen>
     <dimen name="text_size_title_movie">24dp</dimen>
     <dimen name="text_size_sideinfo_movie">16dp</dimen>
     <dimen name="rating_margin_bottom">8dp</dimen>
-    <dimen name="button_size_theatres">10sp</dimen>
     <dimen name="margin_top_map">20dp</dimen>
-    <dimen name="padding_button">4dp</dimen>
     <dimen name="text_button_size">10sp</dimen>
     <dimen name="button_margin_top">4dp</dimen>
     <dimen name="poster_margin_bottom">4dp</dimen>
-    <dimen name="margin_start">50dp</dimen>
+    <dimen name="margin_start">25dp</dimen>
     <dimen name="margin_poster_button">4dp</dimen>
 
 

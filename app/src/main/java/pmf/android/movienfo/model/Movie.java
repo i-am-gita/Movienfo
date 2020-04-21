@@ -1,4 +1,4 @@
-package pmf.android.movienfo;
+package pmf.android.movienfo.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -6,8 +6,6 @@ import android.os.Parcelable;
 import androidx.annotation.Nullable;
 
 import com.google.gson.annotations.SerializedName;
-
-import java.io.Serializable;
 
 public class Movie implements Parcelable {
 

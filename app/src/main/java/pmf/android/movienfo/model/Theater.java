@@ -1,4 +1,4 @@
-package pmf.android.movienfo;
+package pmf.android.movienfo.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

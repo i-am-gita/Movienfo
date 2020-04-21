@@ -19,12 +19,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
 
-import pmf.android.movienfo.Movie;
-import pmf.android.movienfo.Theater;
+import pmf.android.movienfo.model.Movie;
+import pmf.android.movienfo.model.Theater;
 
 public class NetworkUtils {
 

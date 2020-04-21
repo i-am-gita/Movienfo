@@ -6,21 +6,38 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
-    tools:context=".HomeActivity">
-
+    tools:context=".activities.HomeActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        tools:context=".HomeActivity">
+        tools:context=".activities.HomeActivity">
 
         <TextView
             android:id="@+id/upcoming_movies_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/section_title_left_margin"
-            android:layout_marginLeft="@dimen/section_title_left_margin"
+            android:layout_marginTop="@dimen/section_title_top_margin"
+            android:fontFamily="@font/aldrich"
+            android:text="@string/upcoming_movies"
+            android:textColor="@color/colorSecond"
+            android:textIsSelectable="false"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/upcoming_movies_recyclerView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scrollbars="horizontal" />
+
+        <TextView
+            android:id="@+id/now_playing_movies_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/section_title_left_margin"
             android:layout_marginTop="@dimen/section_title_top_margin"
             android:fontFamily="@font/aldrich"
             android:text="@string/now_playing_movies"
@@ -29,44 +46,17 @@
             android:textSize="24sp"
             android:textStyle="bold" />
 
-
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/upcoming_movies_recyclerView"
+            android:id="@+id/now_playing_movies_recyclerView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:scrollbars="horizontal"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true" />
-
-
-        <TextView
-            android:id="@+id/trending_movies_textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/section_title_left_margin"
-            android:layout_marginLeft="@dimen/section_title_left_margin"
-            android:layout_marginTop="@dimen/section_title_top_margin"
-            android:fontFamily="@font/aldrich"
-            android:text="@string/trending_movies"
-            android:textColor="@color/colorSecond"
-            android:textIsSelectable="false"
-            android:textSize="24sp"
-            android:textStyle="bold" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/trending_movies_recyclerView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scrollbars="horizontal"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true" />
+            android:scrollbars="horizontal"/>
 
         <TextView
             android:id="@+id/top_movies_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/section_title_left_margin"
-            android:layout_marginLeft="@dimen/section_title_left_margin"
             android:layout_marginTop="@dimen/section_title_top_margin"
             android:fontFamily="@font/aldrich"
             android:text="@string/top_rated"
@@ -79,16 +69,13 @@
             android:id="@+id/top_movies_recyclerView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:scrollbars="horizontal"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true" />
+            android:scrollbars="horizontal" />
 
         <TextView
             android:id="@+id/popular_movies_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/section_title_left_margin"
-            android:layout_marginLeft="@dimen/section_title_left_margin"
             android:layout_marginTop="@dimen/section_title_top_margin"
             android:fontFamily="@font/aldrich"
             android:text="@string/popular"
@@ -101,43 +88,41 @@
             android:id="@+id/popular_movies_recyclerView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:scrollbars="horizontal"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true" />
+            android:scrollbars="horizontal" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/find_theaters_textView"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/section_title_left_margin"
-            android:layout_marginLeft="@dimen/section_title_left_margin"
-            android:layout_marginTop="@dimen/section_title_top_margin"
-            android:fontFamily="@font/aldrich"
-            android:text="@string/find_theaters"
-            android:textColor="@color/colorSecond"
-            android:textIsSelectable="false"
-            android:textSize="@dimen/text_size_overview"/>
+            <TextView
+                android:id="@+id/find_theaters_textView"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/section_title_left_margin"
+                android:layout_marginLeft="@dimen/section_title_left_margin"
+                android:layout_marginTop="@dimen/section_title_top_margin"
+                android:fontFamily="@font/aldrich"
+                android:text="@string/find_theaters"
+                android:textColor="@color/colorSecond"
+                android:textIsSelectable="false"
+                android:textSize="@dimen/text_size_overview"/>
 
-        <Button
-            android:id="@+id/find_theaters_button"
-            android:background="@drawable/nearby_theaters_button"
-            android:textColor="@color/colorPrimary"
-            android:lineSpacingExtra="@dimen/text_size_overview"
-            android:text="NEARBY THEATERS"
-            android:textSize="@dimen/text_size_title"
-            android:layout_gravity="center"
-            android:fontFamily="@font/aldrich"
-            android:textAlignment="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-        </Button>
+            <Button
+                android:id="@+id/find_theaters_button"
+                android:background="@drawable/button_nearby_theaters"
+                android:textColor="@color/colorPrimary"
+                android:lineSpacingExtra="@dimen/text_size_overview"
+                android:text="NEARBY THEATERS"
+                android:textSize="@dimen/text_size_title"
+                android:layout_gravity="center"
+                android:fontFamily="@font/aldrich"
+                android:textAlignment="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+            </Button>
 
-    </LinearLayout>
+        </LinearLayout>
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -147,17 +132,12 @@
             android:layout_marginBottom="@dimen/margin_top_map"/>
 
         <fragment
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            xmlns:map="http://schemas.android.com/apk/res-auto"
             android:id="@+id/map"
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:layout_margin="@dimen/margin_top_map"
-            tools:context=".HomeActivity"
+            tools:context=".activities.HomeActivity"
             android:name="com.google.android.gms.maps.SupportMapFragment"/>
-
-
     </LinearLayout>
 
 </ScrollView>

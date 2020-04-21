@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:background="@color/colorPrimary"
-    tools:context=".movie_details.MovieDetailsActivity"
+    tools:context=".activities.movie_details.MovieDetailsActivity"
     tools:ignore="MergeRootFrame">
 
     <com.google.android.material.appbar.AppBarLayout

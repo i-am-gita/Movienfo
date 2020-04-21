@@ -1,4 +1,4 @@
-package pmf.android.movienfo.movie_details;
+package pmf.android.movienfo.activities.movie_details;
 
 import android.graphics.Color;
 import android.os.Build;
@@ -18,13 +18,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
-import pmf.android.movienfo.Movie;
+import pmf.android.movienfo.model.Movie;
 import pmf.android.movienfo.R;
 
 public class MovieDetailsActivity extends AppCompatActivity {
@@ -38,7 +36,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.movie_details_activity);
+        setContentView(R.layout.activity_movie_details);
         ButterKnife.bind(this);
 
         checkBuildVersion();
@@ -157,17 +155,17 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
 
     private boolean isFavorite(Movie movie){
-        if(userFavorites.contains(movie))
-            return true;
-        else
-            return false;
+       for(Movie m : userFavorites){
+           if(m.getId().toString().equals(movie.getId().toString()))return true;
+       }
+       return false;
     }
 
     private boolean inWatchlist(Movie movie){
-        if(userWatchlist.contains(movie))
-            return true;
-        else
-            return false;
+        for(Movie m : userWatchlist){
+            if(m.getId().toString().equals(movie.getId().toString()))return true;
+        }
+        return false;
     }
 
     protected void checkBuildVersion(){

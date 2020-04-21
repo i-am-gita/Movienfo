@@ -46,11 +46,11 @@
                     android:textIsSelectable="true"
                     android:textStyle="bold" />
 
-                <include layout="@layout/rating" />
+                <include layout="@layout/rating_stars" />
 
                 <Button
                     android:id="@+id/favorite_button"
-                    android:background="@drawable/nearby_theaters_button"
+                    android:background="@drawable/button_nearby_theaters"
                     android:textColor="@color/colorPrimary"
                     android:lineSpacingExtra="@dimen/text_size_overview"
                     android:textSize="@dimen/text_button_size"
@@ -64,7 +64,7 @@
 
                 <Button
                     android:id="@+id/watchlist_button"
-                    android:background="@drawable/nearby_theaters_button"
+                    android:background="@drawable/button_nearby_theaters"
                     android:textColor="@color/colorPrimary"
                     android:lineSpacingExtra="@dimen/text_size_overview"
                     android:textSize="@dimen/text_button_size"
@@ -74,32 +74,33 @@
                     android:layout_height="match_parent">
                 </Button>
 
+
+
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/movie_release_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/aldrich"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/margin_top_map"
-                android:textSize="@dimen/text_size_sideinfo_movie"
-                android:textColor="@color/colorSecond"
-                android:textIsSelectable="true" />
-
-            <TextView
-                android:id="@+id/movie_user_rating"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/aldrich"
-                android:layout_marginBottom="@dimen/rating_margin_bottom"
-                android:layout_marginTop="@dimen/rating_margin_bottom"
-                android:textSize="@dimen/text_size_sideinfo_movie"
-                android:textColor="@color/colorSecond"
-                android:textIsSelectable="true" />
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/movie_release_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/aldrich"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_top_map"
+            android:textSize="@dimen/text_size_sideinfo_movie"
+            android:textColor="@color/colorSecond"
+            android:textIsSelectable="true" />
+
+        <TextView
+            android:id="@+id/movie_user_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/aldrich"
+            android:layout_marginBottom="@dimen/rating_margin_bottom"
+            android:layout_marginTop="@dimen/rating_margin_bottom"
+            android:textSize="@dimen/text_size_sideinfo_movie"
+            android:textColor="@color/colorSecond"
+            android:textIsSelectable="true" />
 
         <TextView
             android:id="@+id/movie_overview"

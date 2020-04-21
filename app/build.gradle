@@ -16,6 +16,7 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
+        buildConfigField "String", "API_KEY", "dd87e65ba6d645cde1d242a8351a7c3a"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -26,9 +27,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets {
+        main {
+            res {
+                srcDirs 'src/main/res', 'src/main/res/layouts/home', 'src/main/res/layouts/movie_info', 'src/main/res/layouts/movie_lists', 'src/main/res/drawables', 'src/main/res/drawables/icons', 'src/main/res/drawables/images', 'src/main/res/drawables/logos', 'src/main/res/drawables/buttons'
+            }
+        }
+    }
 
     buildTypes.each {
         it.buildConfigField 'String', 'API_KEY', API_KEY
+        it.buildConfigField 'String', 'PLACES_API_KEY', PLACES_API_KEY
     }
 
 }

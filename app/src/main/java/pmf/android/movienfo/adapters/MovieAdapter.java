@@ -1,14 +1,12 @@
-package pmf.android.movienfo;
+package pmf.android.movienfo.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -18,19 +16,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import pmf.android.movienfo.R;
+import pmf.android.movienfo.model.Movie;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
@@ -71,10 +65,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         LayoutInflater inflater = LayoutInflater.from(parentContext);
         boolean shouldAttachToParentImmediately = false;
         View view;
-        if(layoutName.equals("search_movie_item")){
-            view = inflater.inflate(R.layout.search_movie_item, parent, shouldAttachToParentImmediately);
+        if(layoutName.equals("item_movie_list")){
+            view = inflater.inflate(R.layout.item_movie_list, parent, shouldAttachToParentImmediately);
         }else{
-            view = inflater.inflate(R.layout.movie_item_home, parent, shouldAttachToParentImmediately);
+            view = inflater.inflate(R.layout.item_movie_home, parent, shouldAttachToParentImmediately);
         }
 
 
@@ -83,6 +77,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         return viewHolder;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onBindViewHolder(@NonNull MovieAdapter.MovieViewHolder holder, int position) {
         final Movie movie = mMovies.get(position);
@@ -91,12 +86,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         holder.mMovie = movie;
         String posterUrl = movie.getPosterPath();
 
-        if(layoutName.equals("search_movie_item")){
+        if(layoutName.equals("item_movie_list")){
             holder.mMovieTitle.setText(movie.getOriginalTitle());
             holder.mMovieVote.setText(movie.getVoteAverage());
             holder.mMovieOverview.setText(movie.getOverview());
             holder.overviewScroll.setOnTouchListener(new View.OnTouchListener() {
-
                 public boolean onTouch(View v, MotionEvent event) {
                     v.getParent().requestDisallowInterceptTouchEvent(true);
                     return false;
@@ -106,13 +100,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             if(!listType.equals("favourites") && !listType.equals("watchlist")) {
                 holder.removeFromList.setVisibility(View.GONE);
             }else{
-                holder.removeFromList.setContentDescription(movie.getId().toString());
+                holder.removeFromList.setOnClickListener(v -> mOnItemClickListener.send_details(movie, holder.getAdapterPosition()));
             }
+
+
 
             Picasso.get()
                     .load(posterUrl)
                     .config(Bitmap.Config.RGB_565)
-                    .placeholder(R.drawable.query_movie_placeholder)
+                    .placeholder(R.drawable.image_placeholder_movie_lists)
                     .into(holder.mMoviePoster, new Callback() {
                         @Override
                         public void onSuccess() {
@@ -153,12 +149,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                     });
         }
 
-        holder.mView.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                mOnItemClickListener.send_details(movie, holder.getAdapterPosition());
-            }
-        });
+        holder.mView.setOnClickListener(v -> mOnItemClickListener.send_details(movie, holder.getAdapterPosition()));
     }
 
     private String formatDate(String date){
@@ -176,13 +167,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         super.onViewRecycled(holder);
         //holder.cleanUp();
     }
-
-    public void add(List<Movie> movies) {
-        mMovies.clear();
-        mMovies.addAll(movies);
-        notifyDataSetChanged();
-    }
-
 
     public ArrayList<Movie> getMovies() {
         return mMovies;

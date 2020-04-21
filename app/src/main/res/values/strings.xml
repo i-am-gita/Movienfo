@@ -1,20 +1,16 @@
 <resources>
     <string name="app_name">Movienfo</string>
-    <string name="upcoming_movies">Now playing</string>
     <string name="now_playing_movies">Now playing</string>
     <string name="trending_movies">Trending</string>
-    <string name="sort_by">sort_by</string>
     <string name="popular">Most popular</string>
     <string name="top_rated">Top rated</string>
-    <string name="movie_info_placeholder" />
     <string name="title_network_alert">Network Error</string>
     <string name="message_network_alert">Make sure you are connected to Internet</string>
-    <string name="release_date_error">Release Date Missing</string>
-    <string name="results_for_query">"Results for "</string>
     <string name="movie_user_rating">TMDB: %1$s/10</string>
-    <string name="title_activity_maps">Map</string>
     <string name="find_theaters">You can watch movies in almost every theater across the globe. If you want to find out location of the nearest one to you, please click the button on the right.</string>
     <string name="watchlist">Watchlist</string>
     <string name="favourites">Favourites</string>
     <string name="userList">User pick</string>
+    <string name="google_places_api_key" translatable="false">AIzaSyADGEldZct1-7AwWAtE6ckVxVtm04bHMnw</string>
+    <string name="upcoming_movies">Soon in theaters</string>
 </resources>

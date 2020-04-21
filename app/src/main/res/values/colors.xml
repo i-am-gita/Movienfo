@@ -3,10 +3,6 @@
     <color name="colorPrimary">@android:color/black</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#303F9F</color>
-    <color name="movie_overview_text_color">@android:color/black</color>
-    <color name="movie_review_text_color">@android:color/black</color>
-    <color name="red">#F44336</color>
     <color name="colorSecond">#303F9F</color>
-    <color name="old_main">#ef1e3c</color>
 
 </resources>
