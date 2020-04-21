@@ -5,8 +5,6 @@ import android.net.ConnectivityManager;
 import android.os.Build;
 import android.util.Log;
 
-import androidx.annotation.RequiresApi;
-
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
 
@@ -20,7 +18,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
+import androidx.annotation.RequiresApi;
 import pmf.android.movienfo.model.Movie;
 import pmf.android.movienfo.model.Theater;
 
@@ -28,8 +28,8 @@ public class NetworkUtils {
 
     private static final String TAG = NetworkUtils.class.getSimpleName();
 
-    public static ArrayList<Movie> fetchData(String url) throws IOException{
-        ArrayList<Movie> movies = new ArrayList<>();
+    public static List<Movie> fetchData(String url) throws IOException{
+        List<Movie> movies = new ArrayList<>();
         try{
             URL new_url = new URL(url);
             HttpURLConnection conn = (HttpURLConnection) new_url.openConnection();
@@ -45,11 +45,11 @@ public class NetworkUtils {
         return movies;
     }
 
-    public static ArrayList<Theater> fetchDataTheaters(String url) throws IOException{
-        ArrayList<Theater> theaters = new ArrayList<>();
+    public static List<Theater> fetchDataTheaters(String url) throws IOException{
+        List<Theater> theaters = new ArrayList<>();
         try{
-            URL new_url = new URL(url);
-            HttpURLConnection conn = (HttpURLConnection) new_url.openConnection();
+            URL newUrl = new URL(url);
+            HttpURLConnection conn = (HttpURLConnection) newUrl.openConnection();
             conn.connect();
 
             InputStream inputStream = conn.getInputStream();
@@ -62,7 +62,7 @@ public class NetworkUtils {
         return theaters;
     }
 
-    public static void parseTheaters(String data, ArrayList<Theater> list){
+    private static void parseTheaters(String data, List<Theater> list){
         try{
             JSONObject mainObject = new JSONObject(data);
 
@@ -84,7 +84,7 @@ public class NetworkUtils {
         }
     }
 
-    public static void parseJson(String data, ArrayList<Movie> list){
+    private static void parseJson(String data, List<Movie> list){
         try{
             JSONObject mainObject = new JSONObject(data);
 

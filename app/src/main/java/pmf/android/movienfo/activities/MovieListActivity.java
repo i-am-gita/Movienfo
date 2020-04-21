@@ -8,16 +8,15 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pmf.android.movienfo.R;
@@ -77,13 +76,13 @@ public class MovieListActivity extends AppCompatActivity implements MovieAdapter
                 return false;
             }
         });
-        mAdapter = new MovieAdapter(list, this, "item_movie_list", movieListType);
+        mAdapter = new MovieAdapter(this, list, R.layout.item_movie_list);
         movieListRecycle.setAdapter(mAdapter);
 
     }
 
     @Override
-    public void send_details(Movie movie, int position) {
+    public void sendDetails(Movie movie, int position) {
         if(movieListType.equals("favourites") || movieListType.equals("watchlist")) {
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
             if (movieListType.equals("favourites")) {

@@ -3,9 +3,9 @@ package pmf.android.movienfo.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.annotation.Nullable;
-
 import com.google.gson.annotations.SerializedName;
+
+import androidx.annotation.Nullable;
 
 public class Movie implements Parcelable {
 
@@ -149,7 +149,6 @@ public class Movie implements Parcelable {
     public void setPosterPath(String posterPath) {
         this.posterPath = posterPath;
     }
-
 
 }
 

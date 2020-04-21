@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -12,210 +11,241 @@ import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
+import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pmf.android.movienfo.R;
 import pmf.android.movienfo.model.Movie;
 
-public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
+public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final static String LOG_TAG = MovieAdapter.class.getSimpleName();
+    public final static int TYPE_1 = 1;
+    public final static int TYPE_2 = 2;
 
-    private final ArrayList<Movie> mMovies;
+    private List<Movie> movies;
 
-    private String layoutName;
-
-    private String listType;
-
-    private OnItemClickListener mOnItemClickListener;
+    private int layoutId;
+    private Context context;
+    private OnItemClickListener onItemClickListener;
 
     public interface OnItemClickListener {
-        void send_details(Movie movie, int position);
+        void sendDetails(Movie movie, int position);
     }
 
-    public MovieAdapter(ArrayList<Movie> movies, OnItemClickListener mItemClickListener, String layoutName, String listType){
-        this.mMovies = movies;
-        this.mOnItemClickListener = mItemClickListener;
-        this.layoutName = layoutName;
-        this.listType = listType;
+    public MovieAdapter(Context context, List<Movie> movies , int layoutId){
+        this.context = context;
+        this.movies = movies;
+        this.layoutId = layoutId;
     }
 
-    public MovieAdapter(ArrayList<Movie> movies, OnItemClickListener mItemClickListener, String layoutName){
-        this.mMovies = movies;
-        this.mOnItemClickListener = mItemClickListener;
-        this.layoutName = layoutName;
+    public void setOnItemClickListener(OnItemClickListener mItemClickListener) {
+        this.onItemClickListener = mItemClickListener;
     }
 
+    public void updateMoviesList(List<Movie> movies) {
+        this.movies = movies;
+        notifyDataSetChanged();
+    }
 
+    public boolean shouldBeViewType1(int position) {
+        return position % 5 == 0;
+    }
 
+    @Override
+    public int getItemViewType(int position) {
+        if (shouldBeViewType1(position)) {
+            return TYPE_1;
+        } else {
+            return TYPE_2;
+        }
+    }
 
     @NonNull
     @Override
-    public MovieAdapter.MovieViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context parentContext = parent.getContext();
-        LayoutInflater inflater = LayoutInflater.from(parentContext);
-        boolean shouldAttachToParentImmediately = false;
-        View view;
-        if(layoutName.equals("item_movie_list")){
-            view = inflater.inflate(R.layout.item_movie_list, parent, shouldAttachToParentImmediately);
-        }else{
-            view = inflater.inflate(R.layout.item_movie_home, parent, shouldAttachToParentImmediately);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(layoutId, parent, false);
+        if (viewType == TYPE_1) {
+            return new MovieViewHolder(view);
+        } else {
+            return new MovieViewHolder2(view);
         }
-
-
-        final Context context = view.getContext();
-        MovieViewHolder viewHolder = new MovieViewHolder(view);
-        return viewHolder;
     }
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
-    public void onBindViewHolder(@NonNull MovieAdapter.MovieViewHolder holder, int position) {
-        final Movie movie = mMovies.get(position);
-        final Context context = holder.mView.getContext();
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
+        final Movie movie = movies.get(position);
 
-        holder.mMovie = movie;
-        String posterUrl = movie.getPosterPath();
+        if(shouldBeViewType1(position)){
+            MovieViewHolder holder = (MovieViewHolder) viewHolder;
+            holder.bind(movie);
 
-        if(layoutName.equals("item_movie_list")){
-            holder.mMovieTitle.setText(movie.getOriginalTitle());
-            holder.mMovieVote.setText(movie.getVoteAverage());
-            holder.mMovieOverview.setText(movie.getOverview());
-            holder.overviewScroll.setOnTouchListener(new View.OnTouchListener() {
-                public boolean onTouch(View v, MotionEvent event) {
-                    v.getParent().requestDisallowInterceptTouchEvent(true);
-                    return false;
-                }
-            });
-
-            if(!listType.equals("favourites") && !listType.equals("watchlist")) {
-                holder.removeFromList.setVisibility(View.GONE);
-            }else{
-                holder.removeFromList.setOnClickListener(v -> mOnItemClickListener.send_details(movie, holder.getAdapterPosition()));
-            }
-
-
-
-            Picasso.get()
-                    .load(posterUrl)
-                    .config(Bitmap.Config.RGB_565)
-                    .placeholder(R.drawable.image_placeholder_movie_lists)
-                    .into(holder.mMoviePoster, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            if(holder.mMovie.getId() != movie.getId()){
-                                holder.cleanUp();
-                            }else{
-                                holder.mMoviePoster.setVisibility(View.VISIBLE);
-                            }
-                        }
-
-                        @Override
-                        public void onError(Exception e) {
-                            holder.mMovieTitle.setVisibility(View.VISIBLE);
-                        }
-                    });
+//            if(!listType.equals("favourites") && !listType.equals("watchlist")) {
+//                holder.removeFromList.setVisibility(View.GONE);
+//            }else{
+//                holder.removeFromList.setOnClickListener(v -> onItemClickListener.sendDetails(movie, holder.getAdapterPosition()));
+//            }
         }else{
-            String releaseYear = formatDate(movie.getReleaseDate());
-            holder.mMovieRelease.setText(releaseYear);
-
-            Picasso.get()
-                    .load(posterUrl)
-                    .config(Bitmap.Config.RGB_565)
-                    .placeholder(R.drawable.image_placeholder)
-                    .into(holder.mMovieThumb, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            if(holder.mMovie.getId() != movie.getId()){
-                                holder.cleanUp();
-                            }else{
-                                holder.mMovieThumb.setVisibility(View.VISIBLE);
-                            }
-                        }
-
-                        @Override
-                        public void onError(Exception e) {
-                            holder.mMovieRelease.setVisibility(View.VISIBLE);
-                        }
-                    });
+            MovieViewHolder2 holder = (MovieViewHolder2) viewHolder;
+            holder.bind(movie);
         }
 
-        holder.mView.setOnClickListener(v -> mOnItemClickListener.send_details(movie, holder.getAdapterPosition()));
-    }
-
-    private String formatDate(String date){
-        String[] splitedDate = date.split("-");
-        return splitedDate[0];
+        viewHolder.itemView.setOnClickListener(v -> onItemClickListener.sendDetails(movie, viewHolder.getAdapterPosition()));
     }
 
     @Override
     public int getItemCount() {
-        return mMovies.size();
+        return movies.size();
     }
 
     @Override
-    public void onViewRecycled(MovieViewHolder holder) {
+    public void onViewRecycled(RecyclerView.ViewHolder holder) {
         super.onViewRecycled(holder);
         //holder.cleanUp();
     }
 
-    public ArrayList<Movie> getMovies() {
-        return mMovies;
+    public List<Movie> getMovies() {
+        return movies;
     }
 
-    public class MovieViewHolder extends RecyclerView.ViewHolder{
-        public final View mView;
-        public Movie mMovie;
-
-        @Nullable
+    public static class MovieViewHolder extends RecyclerView.ViewHolder{
         @BindView(R.id.movie_thumbnail)
         ImageView mMovieThumb;
 
-        @Nullable
         @BindView(R.id.search_movie_poster)
         ImageView mMoviePoster;
 
-        @Nullable
         @BindView(R.id.movie_release_date)
         TextView mMovieRelease;
 
-        @Nullable
         @BindView(R.id.search_movie_title)
         TextView mMovieTitle;
 
-        @Nullable
         @BindView(R.id.search_movie_overview)
         TextView mMovieOverview;
 
-        @Nullable
         @BindView(R.id.search_movie_vote)
         TextView mMovieVote;
 
-        @Nullable
         @BindView(R.id.overviewScroll)
         ScrollView overviewScroll;
 
-        @Nullable
         @BindView(R.id.remove_from_list)
         ImageButton removeFromList;
 
         public MovieViewHolder(View view){
             super(view);
             ButterKnife.bind(this, view);
-            mView = view;
         }
 
+        public void bind(Movie movie) {
+            mMovieTitle.setText(movie.getOriginalTitle());
+            mMovieVote.setText(movie.getVoteAverage());
+            mMovieOverview.setText(movie.getOverview());
+            overviewScroll.setOnTouchListener((v, event) -> {
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            });
+
+
+            Picasso.get()
+                    .load(movie.getPosterPath())
+                    .config(Bitmap.Config.RGB_565)
+                    .placeholder(R.drawable.image_placeholder_movie_lists)
+                    .into(mMoviePoster, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            mMoviePoster.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            mMovieTitle.setVisibility(View.VISIBLE);
+                        }
+                    });
+        }
+
+        // Might be redundant
         public void cleanUp(){
-            final Context context = mView.getContext();
+            Picasso.get().cancelRequest(mMovieThumb);
+
+            mMovieThumb.setImageBitmap(null);
+            mMoviePoster.setImageBitmap(null);
+            mMovieThumb.setVisibility(View.INVISIBLE);
+            mMoviePoster.setVisibility(View.INVISIBLE);
+            mMovieRelease.setVisibility(View.GONE);
+            mMovieTitle.setVisibility(View.GONE);
+            mMovieOverview.setVisibility(View.GONE);
+            mMovieVote.setVisibility(View.GONE);
+        }
+    }
+
+    public static class MovieViewHolder2 extends RecyclerView.ViewHolder{
+        @BindView(R.id.movie_thumbnail)
+        ImageView mMovieThumb;
+
+        @BindView(R.id.search_movie_poster)
+        ImageView mMoviePoster;
+
+        @BindView(R.id.movie_release_date)
+        TextView mMovieRelease;
+
+        @BindView(R.id.search_movie_title)
+        TextView mMovieTitle;
+
+        @BindView(R.id.search_movie_overview)
+        TextView mMovieOverview;
+
+        @BindView(R.id.search_movie_vote)
+        TextView mMovieVote;
+
+        @BindView(R.id.overviewScroll)
+        ScrollView overviewScroll;
+
+        @BindView(R.id.remove_from_list)
+        ImageButton removeFromList;
+
+        public MovieViewHolder2(View view){
+            super(view);
+            ButterKnife.bind(this, view);
+        }
+
+        public void bind(Movie movie) {
+            String releaseYear = formatDate(movie.getReleaseDate());
+            mMovieRelease.setText(releaseYear);
+
+            Picasso.get()
+                    .load(movie.getPosterPath())
+                    .config(Bitmap.Config.RGB_565)
+                    .placeholder(R.drawable.image_placeholder)
+                    .into(mMovieThumb, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            mMovieThumb.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            mMovieRelease.setVisibility(View.VISIBLE);
+                        }
+                    });
+        }
+
+        private String formatDate(String date){
+            String[] splitedDate = date.split("-");
+            return splitedDate[0];
+        }
+
+        // Might be redundant
+        public void cleanUp(){
             Picasso.get().cancelRequest(mMovieThumb);
 
             mMovieThumb.setImageBitmap(null);

@@ -26,16 +26,6 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -56,8 +46,19 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pmf.android.movienfo.BuildConfig;
@@ -91,17 +92,20 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
     RecyclerView topRatedRecycle;
     @BindView(R.id.find_theaters_button)
     Button theatersButton;
-    @BindView(R.id.progressBar)
+    @BindView(R.id.progress_bar)
     ProgressBar progressBar;
 
     //API responses
-    HashMap<String, ArrayList<Movie>> fetchedMovies;
+    HashMap<String, List<Movie>> fetchedMovies;
 
     //For searching movies based on user input
     String movieQuery;
-    ArrayList<Movie> searchResults;
+    List<Movie> searchResults;
 
-    private MovieAdapter mAdapter;
+    private MovieAdapter upcomingMoviesAdapter;
+    private MovieAdapter nowPlayingMoviesAdapter;
+    private MovieAdapter topRatedMoviesAdapter;
+    private MovieAdapter popularMoviesAdapter;
 
     //For displaying map with location markers
     private int PERMISSION_ID = 44;
@@ -109,10 +113,9 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
     private GoogleMap mMap;
     FusedLocationProviderClient mFusedLocationClient;
     SupportMapFragment mapFragment;
-    ArrayList<Theater> theaters;
-
-    ArrayList<Movie> userFavorites;
-    ArrayList<Movie> userWatchlist;
+    List<Theater> theaters;
+    List<Movie> userFavorites;
+    List<Movie> userWatchlist;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -142,16 +145,7 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
                 dialog.show();
             }
         }
-        nowPlayingRecycle.setLayoutManager(new LinearLayoutManager(this,RecyclerView.HORIZONTAL,false));
-        upcomingRecycle.setLayoutManager(new LinearLayoutManager(this,RecyclerView.HORIZONTAL, false));
-        topRatedRecycle.setLayoutManager(new LinearLayoutManager(this,RecyclerView.HORIZONTAL, false));
-        mostPopularRecycle.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
-
-        mAdapter = new MovieAdapter(new ArrayList<Movie>(), this, "item_movie_home");
-        upcomingRecycle.setAdapter(mAdapter);
-        nowPlayingRecycle.setAdapter(mAdapter);
-        topRatedRecycle.setAdapter(mAdapter);
-        mostPopularRecycle.setAdapter(mAdapter);
+        initializeMoviesList();
 
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -159,6 +153,25 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
 
         theatersButton.setOnClickListener(this);
 
+    }
+
+    private void initializeMoviesList() {
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
+
+        nowPlayingRecycle.setLayoutManager(linearLayoutManager);
+        upcomingRecycle.setLayoutManager(linearLayoutManager);
+        topRatedRecycle.setLayoutManager(linearLayoutManager);
+        mostPopularRecycle.setLayoutManager(linearLayoutManager);
+
+        popularMoviesAdapter = new MovieAdapter(this, Collections.emptyList(), R.layout.item_movie_home);
+        topRatedMoviesAdapter = new MovieAdapter(this, Collections.emptyList(), R.layout.item_movie_home);
+        nowPlayingMoviesAdapter = new MovieAdapter(this, Collections.emptyList(), R.layout.item_movie_home);
+        upcomingMoviesAdapter = new MovieAdapter(this, Collections.emptyList(), R.layout.item_movie_home);
+
+        upcomingRecycle.setAdapter(upcomingMoviesAdapter);
+        nowPlayingRecycle.setAdapter(nowPlayingMoviesAdapter);
+        topRatedRecycle.setAdapter(topRatedMoviesAdapter);
+        mostPopularRecycle.setAdapter(popularMoviesAdapter);
     }
 
     public void onResume() {
@@ -385,14 +398,14 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
 
             case R.id.watchlist:
                 Intent watchlistIntent = new Intent(this, MovieListActivity.class);
-                watchlistIntent.putParcelableArrayListExtra("list",userWatchlist);
+                watchlistIntent.putParcelableArrayListExtra("list", new ArrayList(userWatchlist));
                 watchlistIntent.putExtra("stringData","watchlist");
                 startActivity(watchlistIntent);
                 return false;
 
             case R.id.favourites:
                 Intent favIntent = new Intent(this, MovieListActivity.class);
-                favIntent.putParcelableArrayListExtra("list", userFavorites);
+                favIntent.putParcelableArrayListExtra("list", new ArrayList(userFavorites));
                 favIntent.putExtra("stringData","favourites");
                 startActivity(favIntent);
                 return true;
@@ -403,11 +416,11 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
     }
 
     @Override
-    public void send_details(Movie movie, int position) {
+    public void sendDetails(Movie movie, int position) {
         Intent intent = new Intent(this, MovieDetailsActivity.class);
         intent.putExtra("selectedMovie", movie);
-        intent.putParcelableArrayListExtra("favourites", userFavorites);
-        intent.putParcelableArrayListExtra("watchlist", userWatchlist);
+        intent.putParcelableArrayListExtra("favourites", new ArrayList(userFavorites));
+        intent.putParcelableArrayListExtra("watchlist", new ArrayList(userWatchlist));
         startActivity(intent);
     }
 
@@ -466,10 +479,10 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
         protected void onPostExecute(Void  s) {
             super.onPostExecute(s);
             Intent searchIntent = new Intent(HomeActivity.this, MovieListActivity.class);
-            searchIntent.putExtra("list", searchResults);
+            searchIntent.putExtra("list", new ArrayList(searchResults));
             searchIntent.putExtra("stringData", movieQuery);
-            searchIntent.putParcelableArrayListExtra("userFavs", userFavorites);
-            searchIntent.putParcelableArrayListExtra("userWatch", userWatchlist);
+            searchIntent.putParcelableArrayListExtra("userFavs", new ArrayList(userFavorites));
+            searchIntent.putParcelableArrayListExtra("userWatch", new ArrayList(userWatchlist));
             startActivity(searchIntent);
         }
     }
@@ -559,18 +572,10 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
         protected void onPostExecute(Void  s) {
             super.onPostExecute(s);
 
-            mAdapter = new MovieAdapter(fetchedMovies.get("upcoming"),HomeActivity.this, "item_movie_home");
-            upcomingRecycle.setAdapter(mAdapter);
-
-            mAdapter = new MovieAdapter(fetchedMovies.get("now_playing"), HomeActivity.this, "item_movie_home");
-            nowPlayingRecycle.setAdapter(mAdapter);
-
-            mAdapter = new MovieAdapter(fetchedMovies.get("top_rated"), HomeActivity.this, "item_movie_home");
-            topRatedRecycle.setAdapter(mAdapter);
-
-            mAdapter = new MovieAdapter(fetchedMovies.get("popular"), HomeActivity.this, "item_movie_home");
-            mostPopularRecycle.setAdapter(mAdapter);
-
+            upcomingMoviesAdapter.updateMoviesList(fetchedMovies.get("upcoming"));
+            nowPlayingMoviesAdapter.updateMoviesList(fetchedMovies.get("now_playing"));
+            topRatedMoviesAdapter.updateMoviesList(fetchedMovies.get("top_rated"));
+            popularMoviesAdapter.updateMoviesList(fetchedMovies.get("popular"));
         }
     }
 }
