@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/action_bar_height_sw600dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorPrimary"
+    android:orientation="horizontal">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/home_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/icon_home"
+            android:layout_width="@dimen/home_icon_width"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/icon_launcher_movienfo"
+            android:layout_marginEnd="@dimen/margin_end_icon_action_bar_sw600dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:contentDescription="@string/home_icon_desc_land" />
+
+        <EditText
+            android:id="@+id/search_bar_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/search_hint"
+            android:textSize="@dimen/text_size_action_bar_sw600dp"
+            android:imeOptions="actionDone"
+            android:layout_gravity="center"
+            android:fontFamily="@font/aldrich"
+            android:textColor="@color/colorSecond"
+            android:textColorHint="@color/colorAccent"
+            android:background="@color/colorPrimary"
+            android:inputType="textCapWords"
+            android:autofillHints="@string/search_hint" />
+
+        <ImageButton
+            android:id="@+id/search_bar_hint_icon"
+            android:layout_width="@dimen/search_icon_width_sw600dp"
+            android:layout_height="@dimen/search_icon_height_sw600dp"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/icon_search"
+            android:layout_gravity="end"
+            android:background="@android:color/transparent"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:contentDescription="@string/search_icon_desc" />
+
+        </androidx.appcompat.widget.Toolbar>
+
+</LinearLayout>

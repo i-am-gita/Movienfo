@@ -1,6 +1,7 @@
 package pmf.android.movienfo.activities.movie_details;
 
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -18,7 +19,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
@@ -72,8 +72,6 @@ public class MovieDetailsFragment extends Fragment{
     private boolean isFav;
     private boolean inWatch;
 
-
-
     @Nullable
     @BindView(R.id.search_movie_poster)
     ImageView mPoster;
@@ -93,7 +91,10 @@ public class MovieDetailsFragment extends Fragment{
     @Nullable
     @BindView(R.id.search_movie_vote)
     TextView mVote;
+
     private String movieListType;
+
+    private boolean orientationLandscape;
 
     public MovieDetailsFragment(){
 
@@ -103,7 +104,6 @@ public class MovieDetailsFragment extends Fragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (getArguments().containsKey("selectedMovie")) {
             mMovie = getArguments().getParcelable("selectedMovie");
         }
@@ -111,23 +111,18 @@ public class MovieDetailsFragment extends Fragment{
         if(getArguments().containsKey("movieListType")){
             movieListType = getArguments().getString("movieListType");
         }
+
+        int orientation = this.getResources().getConfiguration().orientation;
+        if(orientation == Configuration.ORIENTATION_LANDSCAPE) orientationLandscape = true;
+        else orientationLandscape = false;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        Activity activity = getActivity();
         if(movieListType == null) {
-
-            Activity activity = getActivity();
-            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
-
-            if (appBarLayout != null && activity instanceof MovieDetailsActivity) {
-                appBarLayout.setTitle(mMovie.getOriginalTitle());
-            }
-
-            ImageView movieBackdrop = ((ImageView) activity.findViewById(R.id.movie_backdrop));
-
+            ImageView movieBackdrop = activity.findViewById(R.id.movie_backdrop);
             if (movieBackdrop != null) {
                 Picasso.get()
                         .load(mMovie.getBackdropPath())
@@ -141,28 +136,38 @@ public class MovieDetailsFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView;
+
+        //Movie selected on home activity or in landscape movie list activity
         if(movieListType == null) {
             rootView = inflater.inflate(R.layout.item_movie_details, container, false);
             ButterKnife.bind(this, rootView);
 
-            mMovieTitleView.setText(mMovie.getOriginalTitle());
-            mMovieOverviewView.setText(mMovie.getOverview());
-            String releaseDate = formatDateString(mMovie.getReleaseDate());
-            mMovieReleaseDateView.setText("Release date: " + releaseDate);
-            Picasso.get()
-                    .load(mMovie.getPosterPath())
-                    .config(Bitmap.Config.RGB_565)
-                    .into(mMoviePosterView);
+            if (orientationLandscape) {
+                mMoviePosterView.setVisibility(View.GONE);
+                mMovieTitleView.setVisibility(View.GONE);
+                mMovieRatingView.setVisibility(View.GONE);
+                mMovieReleaseDateView.setVisibility(View.GONE);
 
+            }else{
+                Picasso.get()
+                        .load(mMovie.getPosterPath())
+                        .config(Bitmap.Config.RGB_565)
+                        .into(mMoviePosterView);
+                mMovieTitleView.setText(mMovie.getOriginalTitle());
+                String releaseDate = formatDateString(mMovie.getReleaseDate());
+                mMovieReleaseDateView.setText("Release date: " + releaseDate);
+            }
+
+            mMovieOverviewView.setText(mMovie.getOverview());
             update_rating_stars();
             Log.d(TAG, "Current selected movie id is: " + String.valueOf(mMovie.getId()));
 
-            if(getArguments().containsKey("favorite")){
-                isFav = getArguments().getBoolean("favorite");
+            if(getArguments().containsKey("inFavourite")){
+                isFav = getArguments().getBoolean("inFavourite");
             }
 
-            if(getArguments().containsKey("watchlist")){
-                inWatch = getArguments().getBoolean("watchlist");
+            if(getArguments().containsKey("inWatchlist")){
+                inWatch = getArguments().getBoolean("inWatchlist");
             }
 
             favoriteButton.setText("FAVORITES");
@@ -177,11 +182,11 @@ public class MovieDetailsFragment extends Fragment{
 
             watchlistButton.setText("WATCHLIST");
             if(inWatch) {
-                Drawable left = getResources().getDrawable(R.drawable.icon_add);
+                Drawable left = getResources().getDrawable(R.drawable.icon_remove);
                 watchlistButton.setCompoundDrawablesWithIntrinsicBounds(left, null , null, null);
             }
             else {
-                Drawable left = getResources().getDrawable(R.drawable.icon_remove);
+                Drawable left = getResources().getDrawable(R.drawable.icon_add);
                 watchlistButton.setCompoundDrawablesWithIntrinsicBounds(left, null , null, null);
             }
 
@@ -189,65 +194,64 @@ public class MovieDetailsFragment extends Fragment{
 
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
-            favoriteButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(isFav){
-                        deleteMovieFirebase(ref, "favorites");
-                        Drawable left = getResources().getDrawable(R.drawable.icon_unfavourite);
-                        favoriteButton.setCompoundDrawablesWithIntrinsicBounds(left, null , null, null);
-                        isFav = false;
-                    }else{
-                        addMovieFirebase(ref, "favorites");
-                        Drawable left = getResources().getDrawable(R.drawable.icon_favourite);
-                        favoriteButton.setCompoundDrawablesWithIntrinsicBounds(left, null , null, null);
-                        isFav = true;
-                    }
+            favoriteButton.setOnClickListener(v -> {
+                if(isFav){
+                    deleteMovieFirebase(ref, "favorites");
+                    Drawable left = getResources().getDrawable(R.drawable.icon_unfavourite);
+                    favoriteButton.setCompoundDrawablesWithIntrinsicBounds(left, null , null, null);
+                    isFav = false;
+                }else{
+                    addMovieFirebase(ref, "favorites");
+                    Drawable left = getResources().getDrawable(R.drawable.icon_favourite);
+                    favoriteButton.setCompoundDrawablesWithIntrinsicBounds(left, null , null, null);
+                    isFav = true;
                 }
             });
 
-            watchlistButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(inWatch){
-                        deleteMovieFirebase(ref, "watchlist");
-                        Drawable left = getResources().getDrawable(R.drawable.icon_remove);
-                        watchlistButton.setCompoundDrawablesWithIntrinsicBounds(left, null , null, null);
-                        inWatch = false;
-                    }else{
-                        addMovieFirebase(ref, "watchlist");
-                        Drawable left = getResources().getDrawable(R.drawable.icon_add);
-                        watchlistButton.setCompoundDrawablesWithIntrinsicBounds(left, null , null, null);
-                        inWatch = true;
-                    }
+            watchlistButton.setOnClickListener(v -> {
+                if(inWatch){
+                    deleteMovieFirebase(ref, "watchlist");
+                    Drawable left = getResources().getDrawable(R.drawable.icon_add);
+                    watchlistButton.setCompoundDrawablesWithIntrinsicBounds(left, null , null, null);
+                    inWatch = false;
+                }else{
+                    addMovieFirebase(ref, "watchlist");
+                    Drawable left = getResources().getDrawable(R.drawable.icon_remove);
+                    watchlistButton.setCompoundDrawablesWithIntrinsicBounds(left, null , null, null);
+                    inWatch = true;
                 }
             });
+
+            //watchlist/favourites or searched movie
         }else{
             rootView = inflater.inflate(R.layout.item_movie_list, container, false);
             ButterKnife.bind(this, rootView);
+
+            if (orientationLandscape) {
+                mOverview.setVisibility(View.GONE);
+            }else{
+                mOverview.setText(mMovie.getOverview());
+            }
+
+
             mTitle.setText(mMovie.getOriginalTitle());
-            mOverview.setText(mMovie.getOverview());
             mVote.setText(mMovie.getVoteAverage());
             Picasso.get()
                     .load(mMovie.getPosterPath())
                     .config(Bitmap.Config.RGB_565)
                     .into(mPoster);
 
-            Log.d(TAG, "Current movie id is: " + String.valueOf(mMovie.getId()));
+            Log.d(TAG, "Current movie id is: " + mMovie.getId());
 
             mRemoveButton.setContentDescription(mMovie.getId().toString());
 
-            //setHasOptionsMenu(true);
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-            mRemoveButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(movieListType.equals("favourites")){
-                        ref.child("favorites").child(mMovie.getId().toString()).removeValue();
+            mRemoveButton.setOnClickListener(v -> {
+                if(movieListType.equals("favourites")){
+                    ref.child("favorites").child(mMovie.getId().toString()).removeValue();
 
-                    }else{
-                        ref.child("watchlist").child(mMovie.getId().toString()).removeValue();
-                    }
+                }else{
+                    ref.child("watchlist").child(mMovie.getId().toString()).removeValue();
                 }
             });
         }
@@ -284,7 +288,7 @@ public class MovieDetailsFragment extends Fragment{
         if (mMovie.getVoteAverage() != null && !mMovie.getVoteAverage().isEmpty()) {
             String user_rating_star = getResources().getString(R.string.movie_user_rating, mMovie.getVoteAverage());
             mMovieRatingView.setText(user_rating_star);
-            float user_rating = Float.valueOf(mMovie.getVoteAverage()) / 2;
+            float user_rating = Float.parseFloat(mMovie.getVoteAverage()) / 2;
             int integerPart = (int) user_rating;
 
             for (int i = 0; i < integerPart; i++) {
@@ -296,7 +300,9 @@ public class MovieDetailsFragment extends Fragment{
                         R.drawable.icon_star_half);
             }
         } else {
-            mMovieRatingView.setVisibility(View.GONE);
+            if (mMovieRatingView != null) {
+                mMovieRatingView.setVisibility(View.GONE);
+            }
         }
     }
 }

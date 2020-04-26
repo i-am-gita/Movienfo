@@ -35,10 +35,15 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private int layoutId;
     private Context context;
     private OnItemClickListener onItemClickListener;
+    private OnFragmentItemClickListener onFragmentItemClickListener;
     private String listType;
 
     public interface OnItemClickListener {
         void sendDetails(Movie movie, int position);
+    }
+
+    public interface OnFragmentItemClickListener{
+        void sendData(Movie movie, int position);
     }
 
     public MovieAdapter(Context context, List<Movie> movies , int layoutId){
@@ -55,6 +60,10 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     public void setOnItemClickListener(OnItemClickListener mItemClickListener) {
         this.onItemClickListener = mItemClickListener;
+    }
+
+    public void setOnFragmentItemClickListener(OnFragmentItemClickListener mFragmentItemCLickListener){
+        this.onFragmentItemClickListener = mFragmentItemCLickListener;
     }
 
     public void updateMoviesList(List<Movie> movies) {
@@ -100,10 +109,14 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             holder.bind(movie);
             if(!listType.equals("favourites") && !listType.equals("watchlist")){
                 holder.removeFromList.setVisibility(View.GONE);
-                holder.itemView.setOnClickListener(iv -> onItemClickListener.sendDetails(movie, holder.getAdapterPosition()));
             }else{
-                holder.removeFromList.setOnClickListener(rfl -> onItemClickListener.sendDetails(movie, holder.getAdapterPosition()));
+                holder.removeFromList.setOnClickListener(remove -> onItemClickListener.sendDetails(movie, holder.getAdapterPosition()));
             }
+            if(onFragmentItemClickListener != null) {
+                holder.mMoviePoster.setOnClickListener(show -> onFragmentItemClickListener.sendData(movie,holder.getAdapterPosition()));
+                holder.mMovieOverview.setVisibility(View.GONE);
+            }
+
         }
     }
 
@@ -149,9 +162,10 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             overviewScroll.setOnTouchListener((v, event) -> { v.getParent().requestDisallowInterceptTouchEvent(true);
                 return false;
             });
-
+            String[] posterPathHttp = movie.getPosterPath().split(":");
+            String posterPathHttps = posterPathHttp[0] + "s:" + posterPathHttp[1];
             Picasso.get()
-                    .load(movie.getPosterPath())
+                    .load(posterPathHttps)
                     .config(Bitmap.Config.RGB_565)
                     .placeholder(R.drawable.image_placeholder_movie_lists)
                     .into(mMoviePoster, new Callback() {
@@ -185,8 +199,11 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             String releaseYear = formatDate(movie.getReleaseDate());
             mMovieRelease.setText(releaseYear);
 
+            String[] posterPathHttp = movie.getPosterPath().split(":");
+            String posterPathHttps = posterPathHttp[0] + "s:" + posterPathHttp[1];
+
             Picasso.get()
-                    .load(movie.getPosterPath())
+                    .load(posterPathHttps)
                     .config(Bitmap.Config.RGB_565)
                     .placeholder(R.drawable.image_placeholder)
                     .into(mMovieThumb, new Callback() {

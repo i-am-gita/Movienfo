@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="text_size_section_title">24sp</dimen>
+
+
+    <dimen name="app_bar_height">200dp</dimen>
+
+    <!-- Home Page dimensions-->
+    <dimen name="section_title_left_margin">8dp</dimen>
+    <dimen name="section_title_top_margin">16dp</dimen>
+
+    <!--Movie Details dimensions-->
+    <dimen name="details_activity_vertical_margin">16dp</dimen>
+    <dimen name="details_activity_horizontal_margin">16dp</dimen>
+    <dimen name="details_movie_poster_width">140dp</dimen>
+    <dimen name="details_movie_poster_height">210dp</dimen>
+    <dimen name="details_movie_poster_padding_right">16dp</dimen>
+    <dimen name="detail_title_left_padding">4dp</dimen>
+    <dimen name="detail_title_bottom_margin">4dp</dimen>
+
+    <dimen name="movie_overview_padding_top">16dp</dimen>
+
+    <dimen name="card_view_margin">16dp</dimen>
+    <dimen name="card_radius">20dp</dimen>
+    <dimen name="card_radius_query">3dp</dimen>
+    <dimen name="text_size_title">17sp</dimen>
+    <dimen name="text_size_overview">14sp</dimen>
+    <dimen name="text_size_vote">17sp</dimen>
+    <dimen name="text_size_title_movie">24sp</dimen>
+    <dimen name="text_size_sideinfo_movie">16sp</dimen>
+    <dimen name="rating_margin_bottom">8dp</dimen>
+    <dimen name="margin_top_map">20dp</dimen>
+    <dimen name="text_button_size">15sp</dimen>
+    <dimen name="button_margin_top">4dp</dimen>
+    <dimen name="poster_margin_bottom">4dp</dimen>
+    <dimen name="margin_start">25dp</dimen>
+    <dimen name="margin_poster_button">4dp</dimen>
+    <dimen name="margin_top_release">8dp</dimen>
+    <dimen name="fav_button_margin_bottom">24dp</dimen>
+    <dimen name="movie_types_text_size_sw600dp">40sp</dimen>
+    <dimen name="find_location_text_size_sw600dp">35sp</dimen>
+    <dimen name="progress_bar_height_sw600dp">75dp</dimen>
+    <dimen name="map_height_sw600dp">700dp</dimen>
+    <dimen name="find_location_text_height_sw600dp">200dp</dimen>
+    <dimen name="map_height_land">400dp</dimen>
+    <dimen name="text_button_size_land">30sp</dimen>
+    <dimen name="text_spacing_button_land">25sp</dimen>
+    <dimen name="text_size_sideinfo_movie_land">30sp</dimen>
+    <dimen name="action_bar_height_land">60dp</dimen>
+    <dimen name="action_bar_height_sw600dp">140dp</dimen>
+    <dimen name="margin_end_icon_action_bar_sw600dp">30dp</dimen>
+    <dimen name="text_size_action_bar_sw600dp">40sp</dimen>
+    <dimen name="movie_recycles_home_padding_end_land">16dp</dimen>
+    <dimen name="map_fragment_layout_land">16dp</dimen>
+    <dimen name="icon_width_sw600dp">48dp</dimen>
+    <dimen name="icon_height_sw600dp">48</dimen>
+    <dimen name="search_icon_width_sw600dp">72dp</dimen>
+    <dimen name="search_icon_height_sw600dp">72dp</dimen>
+    <dimen name="map_height">300dp</dimen>
+    <dimen name="zero">0dp</dimen>
+    <dimen name="map_fragment_layout_height">200dp</dimen>
+    <dimen name="icon_width_find_land">100dp</dimen>
+    <dimen name="map_fragment_height_land">250dp</dimen>
+    <dimen name="find_height_icon">70dp</dimen>
+    <dimen name="map_fragment_layout_height_sw600dp">600dp</dimen>
+    <dimen name="home_icon_width">160dp</dimen>
+    <dimen name="action_bar_height">70dp</dimen>
+    <dimen name="icon_height_home">90dp</dimen>
+</resources>

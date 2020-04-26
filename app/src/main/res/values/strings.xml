@@ -13,4 +13,11 @@
     <string name="userList">User pick</string>
     <string name="google_places_api_key" translatable="false">AIzaSyADGEldZct1-7AwWAtE6ckVxVtm04bHMnw</string>
     <string name="upcoming_movies">Soon in theaters</string>
+    <string name="search_hint">Search movie</string>
+    <string name="toolbar_title">Toolbar</string>
+    <string name="find_theaters_content_desc">Find nearest theaters</string>
+    <string name="recent">Recent</string>
+    <string name="search_icon_desc">Search icon</string>
+    <string name="home_icon_desc_land">Home icon desc land</string>
+    <string name="home_icon_desc">home icon</string>
 </resources>

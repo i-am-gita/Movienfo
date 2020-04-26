@@ -4,13 +4,11 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.database.ChildEventListener;
@@ -22,29 +20,26 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
-import pmf.android.movienfo.model.Movie;
 import pmf.android.movienfo.R;
+import pmf.android.movienfo.model.Movie;
 
 public class MovieDetailsActivity extends AppCompatActivity {
 
     public static final String TAG = MovieDetailsActivity.class.getSimpleName();
 
-    public static ArrayList<Movie> userFavorites;
-    public static ArrayList<Movie> userWatchlist;
+    private ArrayList<Movie> userFavorites;
+    private ArrayList<Movie> userWatchlist;
+    private ArrayList<Movie> recent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_movie_details);
+        getSupportActionBar().hide();
+
         ButterKnife.bind(this);
-
         checkBuildVersion();
-
-        ActionBar actionB = getSupportActionBar();
-        if(actionB != null){
-            actionB.setDisplayHomeAsUpEnabled(true);
-        }
 
         if(savedInstanceState == null){
             Bundle arguments = new Bundle();
@@ -56,8 +51,10 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
             manageDatabase(FirebaseDatabase.getInstance().getReference().child("watchlist"), FirebaseDatabase.getInstance().getReference().child("favourites"));
 
-            arguments.putBoolean("favorite", isFavorite(selected));
-            arguments.putBoolean("watchlist", inWatchlist(selected));
+            arguments.putBoolean("inFavourite", isFavorite(selected));
+            arguments.putBoolean("inWatchlist", inWatchlist(selected));
+            arguments.putParcelableArrayList("watchlist",userWatchlist);
+            arguments.putParcelableArrayList("favourites",userFavorites);
 
             MovieDetailsFragment fragment = new MovieDetailsFragment();
             fragment.setArguments(arguments);
@@ -172,15 +169,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }
 

@@ -3,24 +3,35 @@ package pmf.android.movienfo.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.Nullable;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.SerializedName;
 
-import androidx.annotation.Nullable;
-
+@Entity
 public class Movie implements Parcelable {
 
+    @PrimaryKey
     @SerializedName("id")
     private Long id;
+    @ColumnInfo(name = "vote_average")
     @SerializedName("vote_average")
     private String voteAverage;
+    @ColumnInfo(name = "original_title")
     @SerializedName("original_title")
     private String originalTitle;
+    @ColumnInfo(name = "backdrop_path")
     @SerializedName("backdrop_path")
     private String backdropPath;
+    @ColumnInfo(name = "overview")
     @SerializedName("overview")
     private String overview;
+    @ColumnInfo(name = "release_date")
     @SerializedName("release_date")
     private String releaseDate;
+    @ColumnInfo(name = "poster_path")
     @SerializedName("poster_path")
     private String posterPath;
 

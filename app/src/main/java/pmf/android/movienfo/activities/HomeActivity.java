@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -13,17 +14,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.SearchView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,7 +33,9 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -46,13 +49,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -68,9 +72,10 @@ import pmf.android.movienfo.activities.movie_details.MovieDetailsActivity;
 import pmf.android.movienfo.adapters.MovieAdapter;
 import pmf.android.movienfo.model.Movie;
 import pmf.android.movienfo.model.Theater;
+import pmf.android.movienfo.utilities.MovienfoRoomDatabase;
 import pmf.android.movienfo.utilities.NetworkUtils;
 
-public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnItemClickListener, SearchView.OnQueryTextListener, View.OnClickListener, OnMapReadyCallback, GoogleMap.OnCameraMoveListener {
+public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnItemClickListener, View.OnClickListener, OnMapReadyCallback, GoogleMap.OnCameraMoveListener {
 
     private static final String TAG = HomeActivity.class.getSimpleName();
 
@@ -82,6 +87,12 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
     final String topRatedURL = "https://api.themoviedb.org/3/movie/top_rated?api_key=" + apiKey + "&language=en-US";
     final String mostPopularURL = "https://api.themoviedb.org/3/movie/popular?api_key=" + apiKey + "&language=en-US";
 
+    //Custom action bar elements
+    Toolbar toolbar;
+    EditText searchField;
+    ImageButton searchIcon;
+    ImageView homeIcon;
+
     //Layout elements
     @BindView(R.id.now_playing_movies_recyclerView)
     RecyclerView nowPlayingRecycle;
@@ -92,17 +103,18 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
     @BindView(R.id.top_movies_recyclerView)
     RecyclerView topRatedRecycle;
     @BindView(R.id.find_theaters_button)
-    Button theatersButton;
-    @BindView(R.id.progress_bar)
+    ImageButton theatersButton;
+    @BindView(R.id.progressBar)
     ProgressBar progressBar;
 
-    //API responses
+    //Popular, Top rated, Upcoming, Now playing movies API responses
     HashMap<String, List<Movie>> fetchedMovies;
 
-    //For searching movies based on user input
+    //For searching movies based on user search query
     String movieQuery;
     List<Movie> searchResults;
 
+    //Adapters for recycle views
     private MovieAdapter upcomingMoviesAdapter;
     private MovieAdapter nowPlayingMoviesAdapter;
     private MovieAdapter topRatedMoviesAdapter;
@@ -115,23 +127,27 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
     FusedLocationProviderClient mFusedLocationClient;
     SupportMapFragment mapFragment;
     List<Theater> theaters;
-    List<Movie> userFavorites;
-    List<Movie> userWatchlist;
 
+    //List that are sent to other activities in order for content to be consistent
+    private List<Movie> userFavorites;
+    private List<Movie> userWatchlist;
+
+    //Room database data for last 10 movies seen by user
+    private List<Movie> recentMovies;
+
+    @SuppressLint({"ResourceType", "ClickableViewAccessibility"})
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_home);
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowHomeEnabled(true);
-        actionBar.setDisplayShowTitleEnabled(false);
-        actionBar.setIcon(R.drawable.logo_render_movienfo);
-
         ButterKnife.bind(this);
+
+        //Custom action bar
+        setActionBarElements(getSupportActionBar());
 
         progressBar.setVisibility(View.GONE);
 
@@ -154,6 +170,124 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
 
         theatersButton.setOnClickListener(this);
 
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void setActionBarElements(ActionBar customActionBar){
+
+        customActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        customActionBar.setDisplayShowCustomEnabled(true);
+        customActionBar.setCustomView(R.layout.action_bar_custom);
+        customActionBar.setBackgroundDrawable(new ColorDrawable(Color.BLACK));
+
+        View view = getSupportActionBar().getCustomView();
+        toolbar = view.findViewById(R.id.home_toolbar);
+        searchIcon = view.findViewById(R.id.search_bar_hint_icon);
+        homeIcon = view.findViewById(R.id.icon_home);
+        searchField = view.findViewById(R.id.search_bar_edit_text);
+        searchField.setVisibility(View.GONE);
+
+        homeIcon.setOnClickListener(v -> {
+            Intent homeIntent = new Intent(v.getContext(), HomeActivity.class);
+            startActivity(homeIntent);
+        });
+
+        searchIcon.setOnClickListener(v -> {
+                searchField.setVisibility(View.VISIBLE);
+                searchField.requestFocus();
+        });
+
+        KeyboardVisibilityEvent.setEventListener(this, isOpen -> {
+            if(!isOpen){
+                searchIcon.setVisibility(View.VISIBLE);
+                searchField.clearFocus();
+                homeIcon.setVisibility(View.VISIBLE);
+            }else{
+
+            }
+        });
+
+        searchField.setOnFocusChangeListener((v, hasFocus) -> {
+            if(hasFocus){
+                homeIcon.setVisibility(View.GONE);
+                searchIcon.setVisibility(View.GONE);
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(searchField, InputMethodManager.SHOW_IMPLICIT);
+            }else{
+                searchField.setVisibility(View.GONE);
+                searchIcon.setVisibility(View.VISIBLE);
+            }
+        });
+
+        searchField.setOnEditorActionListener((v, actionId, event) -> {
+            if(actionId == EditorInfo.IME_ACTION_DONE){
+                String userInput = searchField.getText().toString();
+                if(userInput == null || userInput.equals("")) {
+                    Toast.makeText(getApplicationContext() , "You need to type at lease one letter in order to see movie results", Toast.LENGTH_SHORT).show();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    homeIcon.setVisibility(View.VISIBLE);
+                    searchIcon.setVisibility(View.VISIBLE);
+                    searchField.setVisibility(View.GONE);
+                }
+                else{
+                    if(NetworkUtils.networkStatus(HomeActivity.this))
+                    {
+                        new MovieSearch().execute();
+                        movieQuery = searchField.getText().toString();
+                    }
+                    else{
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(HomeActivity.this);
+                        dialog.setTitle(getString(R.string.title_network_alert));
+                        dialog.setMessage(getString(R.string.message_network_alert));
+                        dialog.setCancelable(false);
+                        dialog.show();
+                    }
+                }
+            }
+            return false;
+        });
+
+        toolbar.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()){
+                case R.id.watchlist:
+                    Intent watchlistIntent = new Intent(view.getContext(), MovieListActivity.class);
+                    watchlistIntent.putParcelableArrayListExtra("list", new ArrayList(userWatchlist));
+                    watchlistIntent.putExtra("stringData","watchlist");
+                    watchlistIntent.putParcelableArrayListExtra("userFavs", new ArrayList(userFavorites));
+                    watchlistIntent.putParcelableArrayListExtra("userWatch", new ArrayList(userWatchlist));
+                    watchlistIntent.putParcelableArrayListExtra("recent", new ArrayList(recentMovies));
+                    startActivity(watchlistIntent);
+                    return false;
+
+                case R.id.favourites:
+                    Intent favIntent = new Intent(view.getContext(), MovieListActivity.class);
+                    favIntent.putParcelableArrayListExtra("list", new ArrayList(userFavorites));
+                    favIntent.putParcelableArrayListExtra("userFavs", new ArrayList(userFavorites));
+                    favIntent.putParcelableArrayListExtra("userWatch", new ArrayList(userWatchlist));
+                    favIntent.putParcelableArrayListExtra("recent", new ArrayList(recentMovies));
+                    favIntent.putExtra("stringData","favourites");
+                    startActivity(favIntent);
+                    return true;
+
+                case R.id.recent:
+                    Intent recIntent = new Intent(view.getContext(), MovieListActivity.class);
+                    recIntent.putParcelableArrayListExtra("list", new ArrayList(recentMovies));
+                    recIntent.putExtra("stringData","recent");
+                    startActivity(recIntent);
+                    return true;
+
+                default:
+                    return true;
+            }
+        });
+
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        toolbar.inflateMenu(R.menu.menu_home);
+        toolbar.setOverflowIcon(ContextCompat.getDrawable(getApplicationContext(),R.drawable.icon_menu));
+        return true;
     }
 
     private void initializeMoviesList() {
@@ -180,6 +314,7 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
     public void onResume() {
         super.onResume();
         getFirebaseData(FirebaseDatabase.getInstance().getReference());
+        recentMovies = MovienfoRoomDatabase.getInstance(getApplicationContext()).movieDao().getAll();
     }
 
     public void getFirebaseData(DatabaseReference reference){
@@ -265,13 +400,7 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
         mMap = googleMap;
         mMap.setOnCameraMoveListener(this);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-
-                return false;
-            }
-        });
+        mMap.setOnMarkerClickListener(marker -> false);
     }
 
     @Override
@@ -359,67 +488,29 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_home, menu);
-        MenuItem menuItem = menu.findItem(R.id.action_search);
+    private void addToRoomDatabase(Movie movie){
+        if(!recentMovies.contains(movie)){
+            if(recentMovies.size() < 10){
+                recentMovies.add(movie);
+                MovienfoRoomDatabase.getInstance(getApplicationContext()).movieDao().insert(movie);
+            }else{
+                MovienfoRoomDatabase.getInstance(getApplicationContext()).movieDao().delete(recentMovies.get(0));
+                recentMovies.remove(recentMovies.get(0));
 
-        SearchView searchView = (SearchView) menuItem.getActionView();
-        searchView.setQueryHint("Search");
-        searchView.setSubmitButtonEnabled(true);
-        searchView.setSelected(true);
-        searchView.setOnQueryTextListener(this);
-
-        int searchPlateId = searchView.getContext().getResources().getIdentifier("android:id/search_plate", null, null);
-        View searchPlate = searchView.findViewById(searchPlateId);
-        if(searchPlate != null) {
-            searchPlate.setBackgroundColor(Color.BLACK);
-            int searchTextId = searchPlate.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
-            TextView searchText = (TextView) searchPlate.findViewById(searchTextId);
-
-            if(searchText != null) {
-                searchText.setTextColor(Color.parseColor("#303F9F"));
-                searchText.setHintTextColor(Color.parseColor("#303F9F"));
+                MovienfoRoomDatabase.getInstance(getApplicationContext()).movieDao().insert(movie);
+                recentMovies.add(movie);
             }
-        }
-        return true;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        HashMap<Long, Movie> uniqueMovies = new HashMap<>();
-
-        switch (item.getItemId()){
-            case R.id.user_pick:
-                SubMenu subMenu = item.getSubMenu();
-                if(subMenu.getItem().isChecked())
-                    return onOptionsItemSelected(subMenu.getItem());
-                else
-                    return false;
-
-            case R.id.watchlist:
-                Intent watchlistIntent = new Intent(this, MovieListActivity.class);
-                watchlistIntent.putParcelableArrayListExtra("list", new ArrayList(userWatchlist));
-                watchlistIntent.putExtra("stringData","watchlist");
-                startActivity(watchlistIntent);
-                return false;
-
-            case R.id.favourites:
-                Intent favIntent = new Intent(this, MovieListActivity.class);
-                favIntent.putParcelableArrayListExtra("list", new ArrayList(userFavorites));
-                favIntent.putExtra("stringData","favourites");
-                startActivity(favIntent);
-                return true;
-
-            default:
-                return true;
+        }else{
+            Log.w(TAG, "Error");
+            Toast.makeText(getApplicationContext() , movie + " has been recently seen so it is not added to the recent list",
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public void sendDetails(Movie movie, int position) {
+        addToRoomDatabase(movie);
+
         Intent intent = new Intent(this, MovieDetailsActivity.class);
         intent.putExtra("selectedMovie", movie);
         intent.putParcelableArrayListExtra("favourites", new ArrayList(userFavorites));
@@ -427,31 +518,6 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
         startActivity(intent);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        if(query == null || query.equals("")) {
-            return false;
-        }
-        else{
-            movieQuery = query;
-            if(NetworkUtils.networkStatus(HomeActivity.this))
-                new MovieSearch().execute();
-            else{
-                AlertDialog.Builder dialog = new AlertDialog.Builder(HomeActivity.this);
-                dialog.setTitle(getString(R.string.title_network_alert));
-                dialog.setMessage(getString(R.string.message_network_alert));
-                dialog.setCancelable(false);
-                dialog.show();
-            }
-            return true;
-        }
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        return false;
-    }
 
     public class MovieSearch extends AsyncTask<Void, Void, Void>{
 
@@ -486,22 +552,11 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
             searchIntent.putExtra("stringData", movieQuery);
             searchIntent.putParcelableArrayListExtra("userFavs", new ArrayList(userFavorites));
             searchIntent.putParcelableArrayListExtra("userWatch", new ArrayList(userWatchlist));
+            searchIntent.putParcelableArrayListExtra("recent", new ArrayList(recentMovies));
+
             startActivity(searchIntent);
         }
     }
-
-    public class FetchDirections extends AsyncTask<Void, Void, Void>{
-
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-
-            //https://maps.googleapis.com/maps/api/directions/json?origin=44.6501129,20.9046823&destination=44.665384,20.917671&key=AIzaSyAh8f0b0HOJ2UrsftirpnMQPbA4hirLpes
-           // final String directionsURL = "https://maps.googleapis.com/maps/api/directions/json?origin=" + + "&destination=Montreal&key=AIzaSyAh8f0b0HOJ2UrsftirpnMQPbA4hirLpes";
-            return null;
-        }
-    }
-
 
     public class FetchTheatres extends AsyncTask<Void, Void, Void> {
 
