@@ -9,15 +9,12 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:weightSum="100"
-        tools:context=".activities.MovieListActivity">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="30"
             android:orientation="vertical">
 
         <TextView
@@ -42,9 +39,8 @@
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/movie_details_fragment"
-            android:layout_weight="70"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     </LinearLayout>

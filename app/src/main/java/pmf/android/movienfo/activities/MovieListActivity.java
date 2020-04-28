@@ -1,11 +1,12 @@
 package pmf.android.movienfo.activities;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -25,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,20 +55,17 @@ public class MovieListActivity extends AppCompatActivity implements MovieAdapter
 
 
     private MovieAdapter mAdapter;
+    private float screenWidthDpi;
 
     private String movieListType;
     private ArrayList<Movie> list;
     private ArrayList<Movie> userFavorites;
     private ArrayList<Movie> userWatchlist;
 
-    //Landscape changes
-    private boolean orientationLandscape;
-    private MovieDetailsFragment fragment;
-
     //Roomdatabase data
     private ArrayList<Movie> recent;
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +73,7 @@ public class MovieListActivity extends AppCompatActivity implements MovieAdapter
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_movies_list);
 
-        setActionBarElements(getSupportActionBar());
+        setActionBarElements(Objects.requireNonNull(getSupportActionBar()));
         ButterKnife.bind(this);
 
         Intent wantedData = getIntent();
@@ -99,13 +98,6 @@ public class MovieListActivity extends AppCompatActivity implements MovieAdapter
                 infoTextview.setText("Results for " + movieListType);
                 break;
         }
-        int orientation = this.getResources().getConfiguration().orientation;
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            orientationLandscape = true;
-        }else{
-            orientationLandscape = false;
-        }
-
        movieListRecycle.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
 
        movieListRecycle.setOnTouchListener((v, event) -> {
@@ -115,9 +107,19 @@ public class MovieListActivity extends AppCompatActivity implements MovieAdapter
         mAdapter = new MovieAdapter(this, list, R.layout.item_movie_list, movieListType);
         mAdapter.setOnItemClickListener(this);
 
-        if(orientationLandscape) mAdapter.setOnFragmentItemClickListener(this);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int screenWidth = displayMetrics.widthPixels;
+        screenWidthDpi = convertPixelsToDp((float)screenWidth, this);
+
+        if(screenWidthDpi >= 600) mAdapter.setOnFragmentItemClickListener(this);
         movieListRecycle.setAdapter(mAdapter);
 
+
+    }
+
+    public static float convertPixelsToDp(float px, Context context){
+        return px / ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
     }
 
     private void setActionBarElements(ActionBar customActionBar) {
@@ -126,7 +128,7 @@ public class MovieListActivity extends AppCompatActivity implements MovieAdapter
         customActionBar.setCustomView(R.layout.action_bar_custom);
         customActionBar.setBackgroundDrawable(new ColorDrawable(Color.BLACK));
 
-        View view = getSupportActionBar().getCustomView();
+        View view = Objects.requireNonNull(getSupportActionBar()).getCustomView();
         toolbar = view.findViewById(R.id.home_toolbar);
         searchIcon = view.findViewById(R.id.search_bar_hint_icon);
         homeIcon = view.findViewById(R.id.icon_home);
@@ -145,54 +147,64 @@ public class MovieListActivity extends AppCompatActivity implements MovieAdapter
     @Override
     public void sendDetails(Movie movie, int position) {
 
-        switch (movieListType){
-            case "favourites":
-                FirebaseDatabase.getInstance().getReference().child("favorites").child(movie.getId().toString()).removeValue();
-                list.remove(movie);
-                Toast.makeText(getApplicationContext() , movie.getOriginalTitle() + " removed from favourites!", Toast.LENGTH_SHORT).show();
-                refreshMovieList();
-                break;
-            case "watchlist":
-                FirebaseDatabase.getInstance().getReference().child("watchlist").child(movie.getId().toString()).removeValue();
-                list.remove(movie);
-                Toast.makeText(getApplicationContext() , movie.getOriginalTitle() + " removed from watchlist!", Toast.LENGTH_SHORT).show();
-                refreshMovieList();
-                break;
-            default:
-                Intent movieIntent = new Intent(this, MovieDetailsActivity.class);
-                movieIntent.putExtra("selectedMovie", movie);
-                movieIntent.putParcelableArrayListExtra("searchResultMovies", new ArrayList(list));
-                movieIntent.putParcelableArrayListExtra("favourites", userFavorites);
-                movieIntent.putParcelableArrayListExtra("watchlist", userWatchlist);
-                startActivity(movieIntent);
-                break;
+        if(position == -100){
+            Intent movieIntent = new Intent(this, MovieDetailsActivity.class);
+            movieIntent.putExtra("selectedMovie", movie);
+            movieIntent.putParcelableArrayListExtra("favourites", userFavorites);
+            movieIntent.putParcelableArrayListExtra("watchlist", userWatchlist);
+            startActivity(movieIntent);
+        }else {
+            switch (movieListType) {
+                case "favourites":
+                    FirebaseDatabase.getInstance().getReference().child("favorites").child(movie.getId().toString()).removeValue();
+                    list.remove(movie);
+                    Toast.makeText(getApplicationContext(), movie.getOriginalTitle() + " removed from favourites!", Toast.LENGTH_SHORT).show();
+                    refreshMovieList();
+                    break;
+                case "watchlist":
+                    FirebaseDatabase.getInstance().getReference().child("watchlist").child(movie.getId().toString()).removeValue();
+                    list.remove(movie);
+                    Toast.makeText(getApplicationContext(), movie.getOriginalTitle() + " removed from watchlist!", Toast.LENGTH_SHORT).show();
+                    refreshMovieList();
+                    break;
+                default:
+                    Intent movieIntent = new Intent(this, MovieDetailsActivity.class);
+                    movieIntent.putExtra("selectedMovie", movie);
+                    movieIntent.putParcelableArrayListExtra("favourites", userFavorites);
+                    movieIntent.putParcelableArrayListExtra("watchlist", userWatchlist);
+                    startActivity(movieIntent);
+                    break;
+            }
         }
 }
 
     @Override
     public void sendData(Movie movie, int position) {
+            boolean contains = false;
+            for(Movie m : recent){
+                if(m.getId().toString().equals(movie.getId().toString())) contains = true;
+            }
+            if(!contains)addToRoomDatabase(movie);
 
-            addToRoomDatabase(movie);
+            if(screenWidthDpi> 600){
+                Bundle arguments = new Bundle();
+                arguments.putParcelable("selectedMovie", movie);
+                arguments.putBoolean("inFavourite", isFavorite(movie));
+                arguments.putBoolean("inWatchlist", inWatchlist(movie));
+                arguments.putParcelableArrayList("watchlist",userWatchlist);
+                arguments.putParcelableArrayList("favourites",userFavorites);
 
-            Bundle arguments = new Bundle();
-            arguments.putParcelable("selectedMovie", movie);
-            arguments.putBoolean("inFavourite", isFavorite(movie));
-            arguments.putBoolean("inWatchlist", inWatchlist(movie));
-            arguments.putParcelableArrayList("watchlist",userWatchlist);
-            arguments.putParcelableArrayList("favourites",userFavorites);
-
-            fragment = new MovieDetailsFragment();
-            fragment.setArguments(arguments);
-            if(fragment == null) {
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.movie_details_fragment, fragment)
-                        .commit();
-            }else{
+                MovieDetailsFragment fragment = new MovieDetailsFragment();
+                fragment.setArguments(arguments);
                 fragment.setArguments(arguments);
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.movie_details_fragment, fragment)
                         .commit();
+            }else{
+                sendDetails(movie,position);
             }
+
+
 
 
     }
@@ -218,6 +230,9 @@ public class MovieListActivity extends AppCompatActivity implements MovieAdapter
     private void refreshMovieList(){
         Intent favIntent = new Intent(this, MovieListActivity.class);
         favIntent.putParcelableArrayListExtra("list", list);
+        favIntent.putParcelableArrayListExtra("recent",recent);
+        favIntent.putParcelableArrayListExtra("userFavs",userFavorites);
+        favIntent.putParcelableArrayListExtra("userWatch",userWatchlist);
         favIntent.putExtra("stringData", movieListType);
         finish();
         startActivity(favIntent);

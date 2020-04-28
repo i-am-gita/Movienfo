@@ -1,11 +1,14 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-
-    </style>
-
     <style name="CustomTheme" parent="Theme.AppCompat.Light">
+        <item name="actionBarSize">@dimen/action_bar_height</item>
+        <item name="android:actionBarSize">@dimen/action_bar_height</item>
+        <item name="contentInsetStart">0dp</item>
+        <item name="contentInsetEnd">0dp</item>
+        <item name="android:contentInsetLeft" tools:targetApi="lollipop">0dp</item>
+        <item name="android:contentInsetStart" tools:targetApi="lollipop">0dp</item>
+        <item name="android:contentInsetRight" tools:targetApi="lollipop">0dp</item>
+        <item name="android:contentInsetEnd" tools:targetApi="lollipop">0dp</item>
     </style>
 
 </resources>

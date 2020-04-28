@@ -5,8 +5,12 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -36,6 +40,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -63,6 +68,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -147,7 +153,7 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
         ButterKnife.bind(this);
 
         //Custom action bar
-        setActionBarElements(getSupportActionBar());
+        setActionBarElements(Objects.requireNonNull(getSupportActionBar()));
 
         progressBar.setVisibility(View.GONE);
 
@@ -165,7 +171,9 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
         initializeMoviesList();
 
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
         getSupportFragmentManager().beginTransaction().hide(mapFragment).commit();
 
         theatersButton.setOnClickListener(this);
@@ -174,13 +182,11 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void setActionBarElements(ActionBar customActionBar){
-
         customActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         customActionBar.setDisplayShowCustomEnabled(true);
         customActionBar.setCustomView(R.layout.action_bar_custom);
         customActionBar.setBackgroundDrawable(new ColorDrawable(Color.BLACK));
-
-        View view = getSupportActionBar().getCustomView();
+        View view = Objects.requireNonNull(getSupportActionBar()).getCustomView();
         toolbar = view.findViewById(R.id.home_toolbar);
         searchIcon = view.findViewById(R.id.search_bar_hint_icon);
         homeIcon = view.findViewById(R.id.icon_home);
@@ -202,8 +208,6 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
                 searchIcon.setVisibility(View.VISIBLE);
                 searchField.clearFocus();
                 homeIcon.setVisibility(View.VISIBLE);
-            }else{
-
             }
         });
 
@@ -212,7 +216,9 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
                 homeIcon.setVisibility(View.GONE);
                 searchIcon.setVisibility(View.GONE);
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(searchField, InputMethodManager.SHOW_IMPLICIT);
+                if (imm != null) {
+                    imm.showSoftInput(searchField, InputMethodManager.SHOW_IMPLICIT);
+                }
             }else{
                 searchField.setVisibility(View.GONE);
                 searchIcon.setVisibility(View.VISIBLE);
@@ -222,10 +228,12 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
         searchField.setOnEditorActionListener((v, actionId, event) -> {
             if(actionId == EditorInfo.IME_ACTION_DONE){
                 String userInput = searchField.getText().toString();
-                if(userInput == null || userInput.equals("")) {
+                if(userInput.equals("")) {
                     Toast.makeText(getApplicationContext() , "You need to type at lease one letter in order to see movie results", Toast.LENGTH_SHORT).show();
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    if (imm != null) {
+                        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    }
                     homeIcon.setVisibility(View.VISIBLE);
                     searchIcon.setVisibility(View.VISIBLE);
                     searchField.setVisibility(View.GONE);
@@ -273,6 +281,8 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
                 case R.id.recent:
                     Intent recIntent = new Intent(view.getContext(), MovieListActivity.class);
                     recIntent.putParcelableArrayListExtra("list", new ArrayList(recentMovies));
+                    recIntent.putParcelableArrayListExtra("userFavs", new ArrayList(userFavorites));
+                    recIntent.putParcelableArrayListExtra("userWatch", new ArrayList(userWatchlist));
                     recIntent.putExtra("stringData","recent");
                     startActivity(recIntent);
                     return true;
@@ -286,8 +296,40 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
 
     public boolean onCreateOptionsMenu(Menu menu) {
         toolbar.inflateMenu(R.menu.menu_home);
-        toolbar.setOverflowIcon(ContextCompat.getDrawable(getApplicationContext(),R.drawable.icon_menu));
+        Drawable menuIcon = getResources().getDrawable(R.drawable.icon_menu);
+        Bitmap menuBitmap = getBitmapFromVectorDrawable(getApplicationContext(),R.drawable.icon_menu);
+        menuIcon = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(menuBitmap,toolbar.getWidth()/13,toolbar.getHeight()/2 ,true));
+        toolbar.setOverflowIcon(menuIcon);
         return true;
+    }
+
+    public static Bitmap getBitmapFromVectorDrawable(Context context, int drawableId) {
+        Drawable drawable = ContextCompat.getDrawable(context, drawableId);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            if (drawable != null) {
+                drawable = (DrawableCompat.wrap(drawable)).mutate();
+            }
+        }
+
+        Bitmap bitmap = null;
+        if (drawable != null) {
+            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+                    drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        }
+        Canvas canvas = null;
+        if (bitmap != null) {
+            canvas = new Canvas(bitmap);
+        }
+        if (drawable != null) {
+            if (canvas != null) {
+                drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            }
+        }
+        if (canvas != null) {
+            drawable.draw(canvas);
+        }
+
+        return bitmap;
     }
 
     private void initializeMoviesList() {
@@ -479,7 +521,7 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSION_ID) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -509,7 +551,11 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
 
     @Override
     public void sendDetails(Movie movie, int position) {
-        addToRoomDatabase(movie);
+        boolean contains = false;
+        for(Movie m : recentMovies){
+            if(m.getId().toString().equals(movie.getId().toString())) contains = true;
+        }
+        if(!contains)addToRoomDatabase(movie);
 
         Intent intent = new Intent(this, MovieDetailsActivity.class);
         intent.putExtra("selectedMovie", movie);

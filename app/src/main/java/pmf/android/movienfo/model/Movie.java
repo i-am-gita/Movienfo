@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
@@ -39,6 +40,7 @@ public class Movie implements Parcelable {
 
     }
 
+    @Ignore
     public Movie(long id, String voteAverage, String originalTitle, String backdropPath, String overview, String releaseDate, String posterPath) {
         this.id = id;
         this.voteAverage = voteAverage;
@@ -49,6 +51,7 @@ public class Movie implements Parcelable {
         this.posterPath = posterPath;
     }
 
+    @Ignore
     protected Movie(Parcel in){
         id = in.readLong();
         voteAverage = in.readString();

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/details_activity_vertical_margin"
+        android:paddingTop="@dimen/details_activity_vertical_margin"
+        tools:context=".movie_details.MovieDetailFragment">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/details_activity_horizontal_margin"
+            android:paddingRight="@dimen/details_activity_horizontal_margin">
+
+            <ImageView
+                android:id="@+id/movie_poster"
+                android:layout_width="@dimen/details_movie_poster_width_sw600dp"
+                android:layout_height="@dimen/details_movie_poster_height_sw600dp"
+                android:layout_marginBottom="@dimen/poster_margin_bottom"
+                android:contentDescription="@string/movie_thum_desc"
+                android:layout_marginEnd="@dimen/details_movie_poster_padding_right"
+                android:scaleType="fitXY" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/movie_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/detail_title_bottom_margin"
+                    android:layout_marginStart="@dimen/detail_title_left_padding"
+                    android:fontFamily="@font/aldrich"
+                    android:textColor="@color/colorSecond"
+                    android:layout_gravity="center"
+                    android:textSize="@dimen/text_size_section_title_sw600dp"
+                    android:textIsSelectable="true"
+                    android:textStyle="bold" />
+
+                <include layout="@layout/rating_stars" />
+
+                <Button
+                    android:id="@+id/favorite_button"
+                    android:background="@drawable/button_nearby_theaters"
+                    android:textColor="@color/colorSecond"
+                    android:lineSpacingExtra="@dimen/text_size_overview"
+                    android:textSize="@dimen/text_button_size_sw600dp"
+                    android:layout_margin="@dimen/margin_end_icon_action_bar_sw600dp"
+                    android:padding="@dimen/fav_button_padding_sw600dp"
+                    android:fontFamily="@font/aldrich"
+                    android:layout_gravity="center"
+                    android:textAlignment="center"
+                    android:layout_width="@dimen/button_size_sw600dp"
+                    android:layout_height="@dimen/button_size_height_sw600dp">
+                </Button>
+
+                <Button
+                    android:id="@+id/watchlist_button"
+                    android:background="@drawable/button_nearby_theaters"
+                    android:textColor="@color/colorSecond"
+                    android:lineSpacingExtra="@dimen/text_spacing_button_land"
+                    android:textSize="@dimen/text_button_size_sw600dp"
+                    android:fontFamily="@font/aldrich"
+                    android:textAlignment="center"
+                    android:layout_margin="@dimen/margin_end_icon_action_bar_sw600dp"
+                    android:layout_gravity="center"
+                    android:padding="@dimen/fav_button_padding_sw600dp"
+                    android:layout_width="@dimen/button_size_sw600dp"
+                    android:layout_height="@dimen/button_size_height_sw600dp">
+                </Button>
+
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/movie_release_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/aldrich"
+            android:layout_gravity="start"
+            android:layout_marginTop="@dimen/margin_top_release"
+            android:layout_marginStart="@dimen/margin_start"
+            android:textSize="@dimen/text_size_sideinfo_movie_sw600dp"
+            android:textColor="@color/colorSecond"
+            android:textIsSelectable="true" />
+
+        <TextView
+            android:id="@+id/movie_user_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_start"
+            android:fontFamily="@font/aldrich"
+            android:layout_gravity="start"
+            android:layout_marginBottom="@dimen/rating_margin_bottom"
+            android:layout_marginTop="@dimen/rating_margin_bottom"
+            android:textSize="@dimen/text_size_sideinfo_movie_sw600dp"
+            android:textColor="@color/colorSecond"
+            android:textIsSelectable="true" />
+
+        <TextView
+            android:id="@+id/movie_overview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="@dimen/details_activity_horizontal_margin"
+            android:paddingRight="@dimen/details_activity_horizontal_margin"
+            android:paddingTop="@dimen/movie_overview_padding_top"
+            android:fontFamily="@font/aldrich"
+            android:textSize="@dimen/text_size_section_title_sw600dp"
+            android:textColor="@color/colorSecond"
+            android:textIsSelectable="true" />
+
+    </LinearLayout>
+</ScrollView>

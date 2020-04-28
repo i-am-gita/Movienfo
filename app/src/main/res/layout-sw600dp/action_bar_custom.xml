@@ -13,8 +13,8 @@
 
         <ImageView
             android:id="@+id/icon_home"
-            android:layout_width="@dimen/home_icon_width"
-            android:layout_height="match_parent"
+            android:layout_width="@dimen/home_icon_size_sw600dp"
+            android:layout_height="@dimen/home_icon_size_sw600dp"
             android:scaleType="fitXY"
             android:src="@drawable/icon_launcher_movienfo"
             android:contentDescription="@string/home_icon_desc"

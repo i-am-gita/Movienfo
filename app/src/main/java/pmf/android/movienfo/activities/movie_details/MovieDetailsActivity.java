@@ -18,6 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import butterknife.ButterKnife;
 import pmf.android.movienfo.R;
@@ -29,14 +30,13 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     private ArrayList<Movie> userFavorites;
     private ArrayList<Movie> userWatchlist;
-    private ArrayList<Movie> recent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_movie_details);
-        getSupportActionBar().hide();
+        Objects.requireNonNull(getSupportActionBar()).hide();
 
         ButterKnife.bind(this);
         checkBuildVersion();
@@ -78,11 +78,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Log.d(TAG, "Changed movie from the watchlist: " + dataSnapshot.getKey());
-
-                Movie wMovie = dataSnapshot.getValue(Movie.class);
-                for(Movie wathlistM : userWatchlist){
-                    if(wathlistM.getId().equals(wMovie.getId())) wathlistM = wMovie;
-                }
             }
 
             @Override
@@ -121,10 +116,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Log.d(TAG, "Changed favorite movie: " + dataSnapshot.getKey());
 
-                Movie fMovie = dataSnapshot.getValue(Movie.class);
-                for(Movie fav : userFavorites){
-                    if(fav.getId().equals(fMovie.getId())) fav = fMovie;
-                }
             }
 
             @Override

@@ -25,8 +25,9 @@
                 android:layout_width="@dimen/details_movie_poster_width"
                 android:layout_height="@dimen/details_movie_poster_height"
                 android:layout_marginBottom="@dimen/poster_margin_bottom"
-                android:layout_marginRight="@dimen/details_movie_poster_padding_right"
-                android:scaleType="fitXY" />
+                android:layout_marginEnd="@dimen/details_movie_poster_padding_right"
+                android:scaleType="fitXY"
+                android:contentDescription="@string/movie_thum_desc" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -38,7 +39,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/detail_title_bottom_margin"
-                    android:layout_marginLeft="@dimen/detail_title_left_padding"
+                    android:layout_marginStart="@dimen/detail_title_left_padding"
                     android:fontFamily="@font/aldrich"
                     android:textColor="@color/colorSecond"
                     android:textSize="@dimen/text_size_title_movie"
@@ -84,7 +85,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/aldrich"
-            android:layout_gravity="left"
+            android:layout_gravity="start"
             android:layout_marginTop="@dimen/margin_top_release"
             android:layout_marginStart="@dimen/margin_start"
             android:textSize="@dimen/text_size_sideinfo_movie"
@@ -97,7 +98,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_start"
             android:fontFamily="@font/aldrich"
-            android:layout_gravity="left"
+            android:layout_gravity="start"
             android:layout_marginBottom="@dimen/rating_margin_bottom"
             android:layout_marginTop="@dimen/rating_margin_bottom"
             android:textSize="@dimen/text_size_sideinfo_movie"

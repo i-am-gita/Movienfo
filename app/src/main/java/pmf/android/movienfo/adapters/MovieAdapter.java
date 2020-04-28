@@ -18,6 +18,7 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,8 +28,8 @@ import pmf.android.movienfo.model.Movie;
 public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final static String LOG_TAG = MovieAdapter.class.getSimpleName();
-    public final static int HOME_MOVIE_TYPE = 1;
-    public final static int LIST_MOVIE_TYPE = 2;
+    private final static int HOME_MOVIE_TYPE = 1;
+    private final static int LIST_MOVIE_TYPE = 2;
 
     private List<Movie> movies;
 
@@ -71,7 +72,7 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         notifyDataSetChanged();
     }
 
-    public boolean isHomeMovieType(int layoutId) {
+    private boolean isHomeMovieType(int layoutId) {
         return layoutId == R.layout.item_movie_home;
     }
 
@@ -112,9 +113,12 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             }else{
                 holder.removeFromList.setOnClickListener(remove -> onItemClickListener.sendDetails(movie, holder.getAdapterPosition()));
             }
+
             if(onFragmentItemClickListener != null) {
                 holder.mMoviePoster.setOnClickListener(show -> onFragmentItemClickListener.sendData(movie,holder.getAdapterPosition()));
                 holder.mMovieOverview.setVisibility(View.GONE);
+            }else{
+                holder.mMoviePoster.setOnClickListener(go -> onItemClickListener.sendDetails(movie,-100));
             }
 
         }
@@ -126,11 +130,11 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     @Override
-    public void onViewRecycled(RecyclerView.ViewHolder holder) {
+    public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
         super.onViewRecycled(holder);
     }
 
-    public static class ListMovieViewHolder extends RecyclerView.ViewHolder{
+    static class ListMovieViewHolder extends RecyclerView.ViewHolder{
         @BindView(R.id.search_movie_poster)
         ImageView mMoviePoster;
 
@@ -149,20 +153,20 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         @BindView(R.id.remove_from_list)
         ImageButton removeFromList;
 
-        public ListMovieViewHolder(View view){
+        ListMovieViewHolder(View view){
             super(view);
             ButterKnife.bind(this, view);
         }
 
         @SuppressLint("ClickableViewAccessibility")
-        public void bind(Movie movie) {
+        void bind(Movie movie) {
             mMovieTitle.setText(movie.getOriginalTitle());
             mMovieVote.setText(movie.getVoteAverage());
             mMovieOverview.setText(movie.getOverview());
             overviewScroll.setOnTouchListener((v, event) -> { v.getParent().requestDisallowInterceptTouchEvent(true);
                 return false;
             });
-            String[] posterPathHttp = movie.getPosterPath().split(":");
+            String[] posterPathHttp = Objects.requireNonNull(movie.getPosterPath()).split(":");
             String posterPathHttps = posterPathHttp[0] + "s:" + posterPathHttp[1];
             Picasso.get()
                     .load(posterPathHttps)
@@ -182,7 +186,7 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
     }
 
-    public static class HomeMovieViewHolder extends RecyclerView.ViewHolder{
+    static class HomeMovieViewHolder extends RecyclerView.ViewHolder{
         @BindView(R.id.movie_thumbnail)
         ImageView mMovieThumb;
 
@@ -190,16 +194,16 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         TextView mMovieRelease;
 
 
-        public HomeMovieViewHolder(View view){
+        HomeMovieViewHolder(View view){
             super(view);
             ButterKnife.bind(this, view);
         }
 
-        public void bind(Movie movie) {
+        void bind(Movie movie) {
             String releaseYear = formatDate(movie.getReleaseDate());
             mMovieRelease.setText(releaseYear);
 
-            String[] posterPathHttp = movie.getPosterPath().split(":");
+            String[] posterPathHttp = Objects.requireNonNull(movie.getPosterPath()).split(":");
             String posterPathHttps = posterPathHttp[0] + "s:" + posterPathHttp[1];
 
             Picasso.get()

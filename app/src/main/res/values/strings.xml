@@ -20,4 +20,7 @@
     <string name="search_icon_desc">Search icon</string>
     <string name="home_icon_desc_land">Home icon desc land</string>
     <string name="home_icon_desc">home icon</string>
+    <string name="movie_thum_desc">Movie thumb</string>
+    <string name="remove_button_desc">Remove</string>
+    <string name="star_desc">Star</string>
 </resources>

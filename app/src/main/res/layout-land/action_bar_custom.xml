@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/action_bar_height_land"
+    android:layout_height="@dimen/action_bar_height"
     android:background="@color/colorPrimary"
     android:orientation="horizontal">
 
@@ -14,8 +14,8 @@
 
         <ImageView
             android:id="@+id/icon_home"
-            android:layout_width="@dimen/icon_height_home"
-            android:layout_height="match_parent"
+            android:layout_width="@dimen/home_icon_size"
+            android:layout_height="@dimen/home_icon_size"
             android:scaleType="fitXY"
             android:src="@drawable/icon_launcher_movienfo"
             android:contentDescription="@string/home_icon_desc_land"

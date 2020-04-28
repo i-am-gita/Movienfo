@@ -10,7 +10,7 @@
     <dimen name="movie_recycles_home_padding_end_land">16dp</dimen>
     <dimen name="map_fragment_layout_land">16dp</dimen>
     <dimen name="icon_width_sw600dp">48dp</dimen>
-    <dimen name="icon_height_sw600dp">48</dimen>
+    <dimen name="icon_height_sw600dp">48dp</dimen>
     <dimen name="search_icon_width_sw600dp">72dp</dimen>
     <dimen name="search_icon_height_sw600dp">72dp</dimen>
     <dimen name="map_height">300dp</dimen>
@@ -20,7 +20,23 @@
     <dimen name="map_fragment_height_land">250dp</dimen>
     <dimen name="find_height_icon">70dp</dimen>
     <dimen name="map_fragment_layout_height_sw600dp">600dp</dimen>
-    <dimen name="home_icon_width">160dp</dimen>
+    <dimen name="home_icon_width">100dp</dimen>
     <dimen name="action_bar_height">70dp</dimen>
     <dimen name="icon_height_home">90dp</dimen>
+    <dimen name="movie_poster_width_sw600dp">260dp</dimen>
+    <dimen name="movie_poster_height_sw600dp">400dp</dimen>
+    <dimen name="text_size_section_title_sw600dp">50sp</dimen>
+    <dimen name="elevation_movie">3dp</dimen>
+    <dimen name="item_movie_list_layout_margin">8dp</dimen>
+    <dimen name="home_icon_size_sw600dp">90dp</dimen>
+    <dimen name="home_icon_size">40dp</dimen>
+    <dimen name="details_movie_poster_width_sw600dp">270dp</dimen>
+    <dimen name="details_movie_poster_height_sw600dp">400dp</dimen>
+    <dimen name="text_button_size_sw600dp">40sp</dimen>
+    <dimen name="text_size_sideinfo_movie_sw600dp">30sp</dimen>
+    <dimen name="fav_button_padding_sw600dp">20dp</dimen>
+    <dimen name="remove_button_size_sw600dp">60dp</dimen>
+    <dimen name="start_size_sw600dp">90dp</dimen>
+    <dimen name="button_size_sw600dp">300dp</dimen>
+    <dimen name="button_size_height_sw600dp">90dp</dimen>
 </resources>

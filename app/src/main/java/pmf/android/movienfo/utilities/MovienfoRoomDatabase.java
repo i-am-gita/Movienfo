@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase;
 
 import pmf.android.movienfo.model.Movie;
 
-@Database(entities = {Movie.class}, version = 1)
+@Database(entities = {Movie.class}, version = 1, exportSchema = false)
 public abstract class MovienfoRoomDatabase extends RoomDatabase {
 
     private static final String DB_NAME = "recentMovies.db";

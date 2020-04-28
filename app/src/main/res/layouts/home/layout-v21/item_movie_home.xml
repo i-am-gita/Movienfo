@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+    <androidx.cardview.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/upcoming_movies_card_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@color/colorPrimary"
+        android:elevation="3dp"
+        android:padding="@dimen/card_view_margin"
+        android:layout_margin="8dp"
+        card_view:cardCornerRadius="@dimen/card_radius">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorPrimary">
+
+            <ImageView
+                android:id="@+id/movie_thumbnail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/image_placeholder"
+                android:scaleType="fitXY" />
+
+            <TextView
+                android:id="@+id/movie_release_date"
+                style="@style/TextAppearance.AppCompat.Headline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/movie_thumbnail"
+                android:layout_centerInParent="true"
+                android:fontFamily="@font/aldrich"
+                android:singleLine="true"
+                android:background="@color/colorPrimary"
+                android:textColor="@color/colorSecond" />
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
