@@ -17,3 +17,10 @@ Techniques used while implementing application:
 - Using fragments for displaying movie details differently depending on the width of screen size
 - Fetching users current location and displaying that location on google maps fragment(Google Maps API)
 - Fetching location of nearest theaters(Google Places API)
+
+Possible future upgrades:
+-Displaying trailers
+-Adding more detail about movies such as information about actors, writers etc.
+-Enable user to rate specific movie
+-Enable user to comment
+-Displaying theaters in yout neighbourhood where movie is currently showing
