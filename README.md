@@ -5,7 +5,6 @@
 
 <ul style="list-style-type:disc;">
   <li>See watchlist and list of favourite trending, most popular, top rated and now playing movies</li>
-  <br>
   - Lists are represented as a few horizontal scroll bar lists.
   <br>
   - Movies are showed as posters below which relase year is written.
@@ -51,13 +50,8 @@
 <br>
 <ul style="list-style-type:disc;">
   <li>Displaying trailers</li>
-  <br>
   <li>Adding more detail about movies such as information about actors, writers etc.</li>
-  <br>
   <li>Enable user to rate specific movie</li>
-  <br>
   <li>Enable user to comment</li>
-  <br>
   <li>Displaying theaters in yout neighbourhood where movie is currently showing</li>
 </ul>
-<br>
