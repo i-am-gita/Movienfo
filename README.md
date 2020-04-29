@@ -2,6 +2,7 @@
 <h2>Movienfo is partly implemented movie database application.</h2>
 
 <h3>Things you can do:</h3>
+
 <ul style="list-style-type:disc;">
   <li>- See watchlist and list of favourite trending, most popular, top rated and now playing movies. 
   <br>
@@ -9,17 +10,17 @@
   <br>
   - Movies are showed as posters below which relase year is written.
     <br><li>
-  - See movie details, which include:<br></li> - Movie title<br> - Release date<br>- Rating(TMDB + Filled star shapes)
+  - See movie details, which include:</li><br> - Movie title<br> - Release date<br>- Rating(TMDB + Filled star shapes)
   <br>
-  <li>- Short overview in separate or same activity depending on the width of screen size</li>
+  Short overview in separate or same activity depending on the width of screen size
   <br>
-  <li>- Movie poster
+  - Movie poster
   <br>
-  <li> - Backdrop movie image</li>
+  - Backdrop movie image
   <br>
   <li>- Search for a specific movie: 
   <br> 
-  <li>- Input movie title in custom made action bar</li>
+  - Input movie title in custom made action bar
   <br>
   <li>- Add/Remove movie to/from the list of personal favourites
   <br>
@@ -31,16 +32,27 @@
 </ul>
 
 <h3>Techniques used while implementing application:</h3>
-- Manipulating data gathered from TMDB(https://www.themoviedb.org/documentation/api) API
-- Storing data in Firebase realtime database
-- Storing data in SQLLite(Room lib) database
-- Using fragments for displaying movie details differently depending on the width of screen size
-- Fetching users current location and displaying that location on google maps fragment(Google Maps API)
-- Fetching location of nearest theaters(Google Places API)
 
-<h3>Possible future upgrades:</h3><br>
--Displaying trailers<br>
--Adding more detail about movies such as information about actors, writers etc.<br>
--Enable user to rate specific movie<br>
--Enable user to comment<br>
--Displaying theaters in yout neighbourhood where movie is currently showing<br>
+<ul style="list-style-type:disc;">
+  <li>- Manipulating data gathered from TMDB(https://www.themoviedb.org/documentation/api) API</li>
+  <li>- Storing data in Firebase realtime database</li>
+  <li>- Storing data in SQLLite(Room lib) database</li>
+  <li>- Using fragments for displaying movie details differently depending on the width of screen size</li>
+  <li>- Fetching users current location and displaying that location on google maps fragment(Google Maps API)</li>
+  <li>- Fetching location of nearest theaters(Google Places API)</li>
+</ul>
+
+<h3>Possible future upgrades:</h3>
+<br>
+<ul style="list-style-type:disc;">
+  <li>-Displaying trailers</li>
+  <br>
+  <li>-Adding more detail about movies such as information about actors, writers etc.</li>
+  <br>
+  <li>-Enable user to rate specific movie</li>
+  <br>
+  <li>-Enable user to comment</li>
+  <br>
+  <li>-Displaying theaters in yout neighbourhood where movie is currently showing</li>
+</ul>
+<br>
