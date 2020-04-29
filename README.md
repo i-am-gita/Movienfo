@@ -11,4 +11,11 @@ Things you can do:
 - Add/Remove movie to/from the watchlist           
 - See list of 10 most recent movies               
 - Find exact location of theaters that are in 10 mile radius
-                               
+
+Techniques used while implementing application:
+- Manipulating data gathered from TMDB(https://www.themoviedb.org/documentation/api) API
+- Storing data in Firebase realtime database
+- Storing data in SQLLite(Room lib) database
+- Using fragments for displaying movie details differently depending on the width of screen size
+- Fetching users current location and displaying that location on google maps fragment(Google Maps API)
+- Fetching location of nearest theaters(Google Places API)
