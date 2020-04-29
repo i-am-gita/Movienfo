@@ -17,14 +17,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9cc7f327-9f03-4810-b1d1-c2a8f9a39d9d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layouts/movie_info/layout-sw600dp-land-keyshidden/rating_stars.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layouts/movie_info/layout-sw600dp-land/item_movie_details.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layouts/movie_info/layout-sw600dp-port/item_movie_details.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layouts/movie_info/layout-sw600dp/rating_stars.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layouts/movie_lists/layout-land/item_movie_list.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layouts/movie_lists/layout-sw600dp-land/activity_movies_list.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layouts/movie_lists/layout-sw600dp-port/activity_movies_list.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layouts/movie_lists/layout-sw600dp/item_movie_list.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_measurement_17_4_0_aar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_measurement_api_17_4_0_aar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_measurement_base_17_4_0_aar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_measurement_impl_17_4_0_aar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_measurement_sdk_17_4_0_aar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_database_collection_17_0_1_aar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_iid_20_1_5_aar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_installations_16_2_1_aar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_installations_interop_16_0_0_aar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__junit_junit_4_13_jar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/activities/ActionBarInitializer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/activities/MovieInListChecker.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/activities/MovieListInitializer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/fragments/MovieDetailsListFragment.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/utilities/Firebase.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/utilities/MovienfoUtilities.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.6.4/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.6.4/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.6.4/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.6.4/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.6.4/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.6.4/fileHashes/fileHashes.bin" afterDir="false" />
@@ -36,39 +44,61 @@
       <change beforePath="$PROJECT_DIR$/.gradle/5.6.4/javaCompile/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.6.4/javaCompile/taskHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_measurement_17_2_2_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_measurement_api_17_2_2_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_measurement_base_17_2_2_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_measurement_impl_17_2_2_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_measurement_sdk_17_2_2_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_measurement_sdk_api_17_2_2_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_measurement_sdk_api_17_4_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_material_material_1_2_0_alpha05_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_material_material_1_2_0_alpha06_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_analytics_17_2_2_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_analytics_17_4_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_database_19_2_1_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_database_19_3_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_database_collection_17_0_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_iid_20_0_2_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/app/app.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/activities/HomeActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/activities/HomeActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/activities/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/activities/MainActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/activities/MovieListActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/activities/MovieListActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/activities/movie_details/MovieDetailsActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/activities/movie_details/MovieDetailsActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/activities/movie_details/MovieDetailsFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/activities/movie_details/MovieDetailsFragment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/activities/movie_details/MovieDetailsActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/activities/MovieDetailsActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/activities/movie_details/MovieDetailsFragment.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/adapters/MovieAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/adapters/MovieAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/model/Movie.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/model/Movie.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/model/Theater.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/model/Theater.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/utilities/MovieDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/utilities/MovieDao.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/utilities/MovienfoRoomDatabase.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/utilities/MovienfoRoomDatabase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/utilities/NetworkUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pmf/android/movienfo/utilities/NetworkUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout-land/action_bar_custom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout-land/action_bar_custom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout-sw600dp-land/action_bar_custom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout-sw600dp-land/action_bar_custom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout-sw600dp/action_bar_custom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout-sw600dp/action_bar_custom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/action_bar_custom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/action_bar_custom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layouts/home/layout-land/activity_home.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layouts/home/layout-land/activity_home.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layouts/home/layout-land/activity_loading_screen.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layouts/home/layout-land/activity_loading_screen.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layouts/home/layout-ldltr-sw600dp-land/activity_loading_screen.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layouts/home/layout-ldltr-sw600dp-land/activity_loading_screen.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layouts/home/layout-sw600dp-land/activity_home.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layouts/home/layout-sw600dp-land/activity_home.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layouts/home/layout-sw600dp-port/activity_loading_screen.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layouts/home/layout-sw600dp-port/activity_loading_screen.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layouts/home/layout-sw600dp/activity_home.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layouts/home/layout-sw600dp/activity_home.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layouts/home/layout/activity_home.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layouts/home/layout/activity_home.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layouts/home/layout/item_movie_home.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layouts/home/layout/item_movie_home.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layouts/home/layout/activity_loading_screen.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layouts/home/layout/activity_loading_screen.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layouts/movie_info/layout-land/item_movie_details.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layouts/movie_info/layout-land/item_movie_details.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layouts/movie_info/layout-land/rating_stars.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layouts/movie_info/layout-land/rating_stars.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layouts/movie_info/layout-sw600dp-land/item_movie_details.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layouts/movie_info/layout-sw600dp-land/item_movie_details.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layouts/movie_info/layout-sw600dp-port/item_movie_details.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layouts/movie_info/layout-sw600dp-port/item_movie_details.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layouts/movie_info/layout/activity_movie_details.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layouts/movie_info/layout/activity_movie_details.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layouts/movie_info/layout/item_movie_details.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layouts/movie_info/layout/item_movie_details.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layouts/movie_info/layout/rating_stars.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layouts/movie_info/layout/rating_stars.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layouts/movie_lists/layout-land/activity_movies_list.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layouts/movie_lists/layout-land/activity_movies_list.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layouts/movie_lists/layout/activity_movies_list.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layouts/movie_lists/layout/activity_movies_list.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layouts/movie_lists/layout/item_movie_list.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layouts/movie_lists/layout/item_movie_list.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/menu/menu_home.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/menu/menu_home.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/values-sw600dp/dimens.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-sw600dp/dimens.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-sw600dp/drawable/ic_search.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-sw600dp/drawable/icon_search.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-sw600dp/drawable/icon_search.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/values-sw600dp/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-sw600dp/strings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/values-v21/dimens.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-v21/dimens.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/values-v21/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-v21/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-v21/styles.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-v21/styles.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/values/dimens.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/dimens.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/styles.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/styles.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -79,7 +109,7 @@
   <component name="CodeInsightWorkspaceSettings">
     <option name="optimizeImportsOnTheFly" value="true" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="Nexus_10_API_28" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="e65281de" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -98,9 +128,9 @@
         <option value="resourceFile" />
         <option value="layoutResourceFile_vertical" />
         <option value="layoutResourceFile" />
+        <option value="valueResourceFile" />
         <option value="Interface" />
         <option value="Class" />
-        <option value="valueResourceFile" />
       </list>
     </option>
   </component>
@@ -109,13 +139,13 @@
   </component>
   <component name="ProjectId" id="1a4uFhbP6LzHVfQ811IYJcWa6x8" />
   <component name="PropertiesComponent">
-    <property name="DeviceAndSnapshotComboBoxAction.selectedDevice" value="Nexus_10_API_28" />
-    <property name="DeviceAndSnapshotComboBoxAction.selectionTime" value="2020-04-26T01:43:47.063Z" />
+    <property name="DeviceAndSnapshotComboBoxAction.selectedDevice" value="e65281de" />
+    <property name="DeviceAndSnapshotComboBoxAction.selectionTime" value="2020-04-29T15:29:44.366Z" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="android.sdk.path" value="$USER_HOME$/Android/Sdk" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/app/src/main/res/drawables/images/drawable" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/app/src/main/res/drawables/images/drawable" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.17" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />

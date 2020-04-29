@@ -43,14 +43,14 @@
         -->
         <activity
             android:name=".activities.HomeActivity"
-            android:configChanges="screenLayout|screenSize"
+            android:configChanges="screenLayout|orientation|screenSize"
             android:theme="@style/CustomTheme"/>
         <activity
             android:name=".activities.MovieListActivity"
             android:configChanges="screenLayout|orientation|screenSize"
             android:theme="@style/CustomTheme"/>
         <activity
-            android:name=".activities.movie_details.MovieDetailsActivity"
+            android:name=".activities.MovieDetailsActivity"
             android:configChanges="screenLayout|orientation|screenSize"
             android:theme="@style/CustomTheme" />
         <activity android:name=".activities.MainActivity"

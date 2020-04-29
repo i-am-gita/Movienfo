@@ -4,7 +4,6 @@
     android:id="@+id/movie_rating"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
     android:layout_marginStart="@dimen/margin_start"
     android:orientation="horizontal">
 

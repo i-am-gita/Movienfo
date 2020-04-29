@@ -111,6 +111,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/map_fragment_layout_height"
+            android:layout_marginTop="@dimen/margin_top_map"
             android:orientation="vertical"
             android:weightSum="100" >
 
@@ -131,11 +132,14 @@
                 android:id="@+id/find_theaters_button"
                 android:contentDescription="@string/find_theaters_content_desc"
                 app:srcCompat="@drawable/icon_find_location"
+                android:backgroundTint="@color/colorPrimary"
+                android:backgroundTintMode="src_over"
                 android:scaleType="fitXY"
                 android:layout_gravity="center"
                 android:layout_width="@dimen/icon_width_find_land"
                 android:layout_weight="35"
-                android:layout_height="@dimen/zero">
+                android:layout_height="@dimen/zero"
+                tools:ignore="UnusedAttribute">
             </ImageButton>
 
         </LinearLayout>

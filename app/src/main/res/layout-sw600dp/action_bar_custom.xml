@@ -38,7 +38,9 @@
             android:inputType="textCapWords" />
 
         <ImageButton
+            android:contentDescription="@string/movie_thum_desc"
             android:id="@+id/search_bar_hint_icon"
+            android:layout_marginEnd="@dimen/margin_start"
             android:layout_width="@dimen/search_icon_width_sw600dp"
             android:layout_height="@dimen/search_icon_height_sw600dp"
             android:layout_gravity="end"

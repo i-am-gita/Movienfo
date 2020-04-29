@@ -20,14 +20,7 @@ public class Theater implements Parcelable {
 
     }
 
-    public Theater(String id, String name, double lat, double lon){
-        this.id = id;
-        this.name = name;
-        this.lat = lat;
-        this.lon = lon;
-    }
-
-    protected Theater(Parcel in){
+    private Theater(Parcel in){
         id = in.readString();
         name = in.readString();
         lat = in.readDouble();

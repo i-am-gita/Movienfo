@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -39,8 +38,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -59,11 +56,9 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -74,14 +69,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import pmf.android.movienfo.BuildConfig;
 import pmf.android.movienfo.R;
-import pmf.android.movienfo.activities.movie_details.MovieDetailsActivity;
 import pmf.android.movienfo.adapters.MovieAdapter;
 import pmf.android.movienfo.model.Movie;
 import pmf.android.movienfo.model.Theater;
+import pmf.android.movienfo.utilities.Firebase;
 import pmf.android.movienfo.utilities.MovienfoRoomDatabase;
 import pmf.android.movienfo.utilities.NetworkUtils;
 
-public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnItemClickListener, View.OnClickListener, OnMapReadyCallback, GoogleMap.OnCameraMoveListener {
+import static pmf.android.movienfo.utilities.MovienfoUtilities.getBitmapFromVectorDrawable;
+
+public class HomeActivity extends AppCompatActivity implements MovieInListChecker, ActionBarInitializer, MovieAdapter.OnItemClickListener, OnMapReadyCallback, GoogleMap.OnCameraMoveListener, MovieListInitializer {
 
     private static final String TAG = HomeActivity.class.getSimpleName();
 
@@ -92,12 +89,6 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
     final String nowPlayingMoviesURL = "https://api.themoviedb.org/3/movie/now_playing?api_key=" + apiKey + "&language=en-US";
     final String topRatedURL = "https://api.themoviedb.org/3/movie/top_rated?api_key=" + apiKey + "&language=en-US";
     final String mostPopularURL = "https://api.themoviedb.org/3/movie/popular?api_key=" + apiKey + "&language=en-US";
-
-    //Custom action bar elements
-    Toolbar toolbar;
-    EditText searchField;
-    ImageButton searchIcon;
-    ImageView homeIcon;
 
     //Layout elements
     @BindView(R.id.now_playing_movies_recyclerView)
@@ -112,6 +103,13 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
     ImageButton theatersButton;
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
+    private Toolbar toolbar;
+
+    //Adapters for recycle views
+    private MovieAdapter upcomingMoviesAdapter;
+    private MovieAdapter nowPlayingMoviesAdapter;
+    private MovieAdapter topRatedMoviesAdapter;
+    private MovieAdapter popularMoviesAdapter;
 
     //Popular, Top rated, Upcoming, Now playing movies API responses
     HashMap<String, List<Movie>> fetchedMovies;
@@ -120,13 +118,7 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
     String movieQuery;
     List<Movie> searchResults;
 
-    //Adapters for recycle views
-    private MovieAdapter upcomingMoviesAdapter;
-    private MovieAdapter nowPlayingMoviesAdapter;
-    private MovieAdapter topRatedMoviesAdapter;
-    private MovieAdapter popularMoviesAdapter;
-
-    //For displaying map with location markers
+    //Elements for displaying map with current location, and nearest theaters location markers
     private int PERMISSION_ID = 44;
     private double lat,lon;
     private GoogleMap mMap;
@@ -134,7 +126,7 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
     SupportMapFragment mapFragment;
     List<Theater> theaters;
 
-    //List that are sent to other activities in order for content to be consistent
+    //List that are fetched from firebase and then sent to other activities in order for content to be consistent
     private List<Movie> userFavorites;
     private List<Movie> userWatchlist;
 
@@ -155,42 +147,29 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
         //Custom action bar
         setActionBarElements(Objects.requireNonNull(getSupportActionBar()));
 
-        progressBar.setVisibility(View.GONE);
+        //Fetching movies from TMDB API
+        getMoviesFromApi(savedInstanceState);
 
-        if(savedInstanceState == null){
-            if(NetworkUtils.networkStatus(HomeActivity.this))
-                new FetchMovies().execute();
-            else{
-                AlertDialog.Builder dialog = new AlertDialog.Builder(HomeActivity.this);
-                dialog.setTitle(getString(R.string.title_network_alert));
-                dialog.setMessage(getString(R.string.message_network_alert));
-                dialog.setCancelable(false);
-                dialog.show();
-            }
-        }
+        //Populating recycles with data fetched from TMDB API
         initializeMoviesList();
 
-        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(this);
-        }
-        getSupportFragmentManager().beginTransaction().hide(mapFragment).commit();
-
-        theatersButton.setOnClickListener(this);
-
+        //Google map initialization
+        initializeGoogleMap();
     }
 
+    @Override
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void setActionBarElements(ActionBar customActionBar){
         customActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         customActionBar.setDisplayShowCustomEnabled(true);
         customActionBar.setCustomView(R.layout.action_bar_custom);
         customActionBar.setBackgroundDrawable(new ColorDrawable(Color.BLACK));
-        View view = Objects.requireNonNull(getSupportActionBar()).getCustomView();
+        View view = Objects.requireNonNull(customActionBar.getCustomView());
+
         toolbar = view.findViewById(R.id.home_toolbar);
-        searchIcon = view.findViewById(R.id.search_bar_hint_icon);
-        homeIcon = view.findViewById(R.id.icon_home);
-        searchField = view.findViewById(R.id.search_bar_edit_text);
+        ImageButton searchIcon = view.findViewById(R.id.search_bar_hint_icon);
+        ImageView homeIcon = view.findViewById(R.id.icon_home);
+        EditText searchField = view.findViewById(R.id.search_bar_edit_text);
         searchField.setVisibility(View.GONE);
 
         homeIcon.setOnClickListener(v -> {
@@ -199,8 +178,8 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
         });
 
         searchIcon.setOnClickListener(v -> {
-                searchField.setVisibility(View.VISIBLE);
-                searchField.requestFocus();
+            searchField.setVisibility(View.VISIBLE);
+            searchField.requestFocus();
         });
 
         KeyboardVisibilityEvent.setEventListener(this, isOpen -> {
@@ -210,7 +189,7 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
                 homeIcon.setVisibility(View.VISIBLE);
             }
         });
-
+        //When keyboard is closed(if user pressed return button on keyboard) action bar elements visibility changes / When keyboard is opened, edit text gets focus and other elements on action bar are being disabled
         searchField.setOnFocusChangeListener((v, hasFocus) -> {
             if(hasFocus){
                 homeIcon.setVisibility(View.GONE);
@@ -225,6 +204,7 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
             }
         });
 
+        //Fetching movies for query user provided
         searchField.setOnEditorActionListener((v, actionId, event) -> {
             if(actionId == EditorInfo.IME_ACTION_DONE){
                 String userInput = searchField.getText().toString();
@@ -257,32 +237,30 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
         });
 
         toolbar.setOnMenuItemClickListener(item -> {
+
             switch (item.getItemId()){
                 case R.id.watchlist:
                     Intent watchlistIntent = new Intent(view.getContext(), MovieListActivity.class);
-                    watchlistIntent.putParcelableArrayListExtra("list", new ArrayList(userWatchlist));
+                    watchlistIntent.putParcelableArrayListExtra("userFavs", new ArrayList<>(userFavorites));
+                    watchlistIntent.putParcelableArrayListExtra("userWatch", new ArrayList<>(userWatchlist));
+                    watchlistIntent.putParcelableArrayListExtra("recent", new ArrayList<>(recentMovies));
                     watchlistIntent.putExtra("stringData","watchlist");
-                    watchlistIntent.putParcelableArrayListExtra("userFavs", new ArrayList(userFavorites));
-                    watchlistIntent.putParcelableArrayListExtra("userWatch", new ArrayList(userWatchlist));
-                    watchlistIntent.putParcelableArrayListExtra("recent", new ArrayList(recentMovies));
                     startActivity(watchlistIntent);
                     return false;
 
                 case R.id.favourites:
                     Intent favIntent = new Intent(view.getContext(), MovieListActivity.class);
-                    favIntent.putParcelableArrayListExtra("list", new ArrayList(userFavorites));
-                    favIntent.putParcelableArrayListExtra("userFavs", new ArrayList(userFavorites));
-                    favIntent.putParcelableArrayListExtra("userWatch", new ArrayList(userWatchlist));
-                    favIntent.putParcelableArrayListExtra("recent", new ArrayList(recentMovies));
+                    favIntent.putParcelableArrayListExtra("userFavs", new ArrayList<>(userFavorites));
+                    favIntent.putParcelableArrayListExtra("userWatch", new ArrayList<>(userWatchlist));
+                    favIntent.putParcelableArrayListExtra("recent", new ArrayList<>(recentMovies));
                     favIntent.putExtra("stringData","favourites");
                     startActivity(favIntent);
                     return true;
 
                 case R.id.recent:
                     Intent recIntent = new Intent(view.getContext(), MovieListActivity.class);
-                    recIntent.putParcelableArrayListExtra("list", new ArrayList(recentMovies));
-                    recIntent.putParcelableArrayListExtra("userFavs", new ArrayList(userFavorites));
-                    recIntent.putParcelableArrayListExtra("userWatch", new ArrayList(userWatchlist));
+                    recIntent.putParcelableArrayListExtra("userFavs", new ArrayList<>(userFavorites));
+                    recIntent.putParcelableArrayListExtra("userWatch", new ArrayList<>(userWatchlist));
                     recIntent.putExtra("stringData","recent");
                     startActivity(recIntent);
                     return true;
@@ -294,45 +272,24 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
 
     }
 
-    public boolean onCreateOptionsMenu(Menu menu) {
-        toolbar.inflateMenu(R.menu.menu_home);
-        Drawable menuIcon = getResources().getDrawable(R.drawable.icon_menu);
-        Bitmap menuBitmap = getBitmapFromVectorDrawable(getApplicationContext(),R.drawable.icon_menu);
-        menuIcon = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(menuBitmap,toolbar.getWidth()/13,toolbar.getHeight()/2 ,true));
-        toolbar.setOverflowIcon(menuIcon);
-        return true;
-    }
-
-    public static Bitmap getBitmapFromVectorDrawable(Context context, int drawableId) {
-        Drawable drawable = ContextCompat.getDrawable(context, drawableId);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            if (drawable != null) {
-                drawable = (DrawableCompat.wrap(drawable)).mutate();
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void getMoviesFromApi(Bundle savedInstanceState){
+        progressBar.setVisibility(View.GONE);
+        if(savedInstanceState == null){
+            if(NetworkUtils.networkStatus(HomeActivity.this))
+                new FetchMovies().execute();
+            else{
+                AlertDialog.Builder dialog = new AlertDialog.Builder(HomeActivity.this);
+                dialog.setTitle(getString(R.string.title_network_alert));
+                dialog.setMessage(getString(R.string.message_network_alert));
+                dialog.setCancelable(false);
+                dialog.show();
             }
         }
-
-        Bitmap bitmap = null;
-        if (drawable != null) {
-            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
-                    drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        }
-        Canvas canvas = null;
-        if (bitmap != null) {
-            canvas = new Canvas(bitmap);
-        }
-        if (drawable != null) {
-            if (canvas != null) {
-                drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-            }
-        }
-        if (canvas != null) {
-            drawable.draw(canvas);
-        }
-
-        return bitmap;
     }
 
-    private void initializeMoviesList() {
+    @Override
+    public void initializeMoviesList() {
         nowPlayingRecycle.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
         upcomingRecycle.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
         topRatedRecycle.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
@@ -353,9 +310,18 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
         mostPopularRecycle.setAdapter(popularMoviesAdapter);
     }
 
+    public boolean onCreateOptionsMenu(Menu menu) {
+        toolbar.inflateMenu(R.menu.menu_home);
+        Bitmap menuBitmap = getBitmapFromVectorDrawable(getApplicationContext(), R.drawable.icon_menu);
+        Drawable menuIcon = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(menuBitmap,toolbar.getWidth()/13,toolbar.getHeight()/2 ,true));
+        toolbar.setOverflowIcon(menuIcon);
+        return true;
+    }
+
+
     public void onResume() {
         super.onResume();
-        getFirebaseData(FirebaseDatabase.getInstance().getReference());
+        getFirebaseData(Firebase.getInstance().getReference());
         recentMovies = MovienfoRoomDatabase.getInstance(getApplicationContext()).movieDao().getAll();
     }
 
@@ -417,24 +383,60 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
         });
     }
 
+    private void addToRoomDatabase(Movie movie){
+        if(!recentMovies.contains(movie)){
+            if(recentMovies.size() < 10){
+                recentMovies.add(movie);
+                MovienfoRoomDatabase.getInstance(getApplicationContext()).movieDao().insert(movie);
+            }else{
+                MovienfoRoomDatabase.getInstance(getApplicationContext()).movieDao().delete(recentMovies.get(0));
+                recentMovies.remove(recentMovies.get(0));
+
+                MovienfoRoomDatabase.getInstance(getApplicationContext()).movieDao().insert(movie);
+                recentMovies.add(movie);
+            }
+        }else{
+            Log.w(TAG, "Error adding recent movie!");
+            Toast.makeText(getApplicationContext() , movie + " has been recently seen so it is not added to the recent list",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void sendDetails(Movie movie, int position) {
+        if(!listContainsMovie(movie, new ArrayList<>(recentMovies)))
+            addToRoomDatabase(movie);
+
+        Intent intent = new Intent(this, MovieDetailsActivity.class);
+        intent.putExtra("selectedMovie", movie);
+        intent.putParcelableArrayListExtra("favourites", new ArrayList<>(userFavorites));
+        intent.putParcelableArrayListExtra("watchlist", new ArrayList<>(userWatchlist));
+        startActivity(intent);
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    @Override
-    public void onClick(View v) {
-        progressBar.setVisibility(View.VISIBLE);
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        getLastLocation();
-
-        if(NetworkUtils.networkStatus(HomeActivity.this))
-            new FetchTheatres().execute();
-        else{
-            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-            dialog.setTitle(getString(R.string.title_network_alert));
-            dialog.setMessage(getString(R.string.message_network_alert));
-            dialog.setCancelable(false);
-            dialog.show();
+    private void initializeGoogleMap(){
+        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
         }
+        getSupportFragmentManager().beginTransaction().hide(mapFragment).commit();
 
+        theatersButton.setOnClickListener(v -> {
+            progressBar.setVisibility(View.VISIBLE);
+            mFusedLocationClient = LocationServices.getFusedLocationProviderClient(v.getContext());
+            getLastLocation();
+
+            if(NetworkUtils.networkStatus(HomeActivity.this))
+                new FetchTheatres().execute();
+            else{
+                AlertDialog.Builder dialog = new AlertDialog.Builder(v.getContext());
+                dialog.setTitle(getString(R.string.title_network_alert));
+                dialog.setMessage(getString(R.string.message_network_alert));
+                dialog.setCancelable(false);
+                dialog.show();
+            }
+        });
     }
 
     @Override
@@ -498,11 +500,8 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
     };
 
     private boolean checkPermissions(){
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            return true;
-        }
-        return false;
+        return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
     private void requestPermissions() {
@@ -515,6 +514,7 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
 
     private boolean isLocationEnabled() {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        assert locationManager != null;
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
                 LocationManager.NETWORK_PROVIDER
         );
@@ -530,41 +530,16 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
         }
     }
 
-    private void addToRoomDatabase(Movie movie){
-        if(!recentMovies.contains(movie)){
-            if(recentMovies.size() < 10){
-                recentMovies.add(movie);
-                MovienfoRoomDatabase.getInstance(getApplicationContext()).movieDao().insert(movie);
-            }else{
-                MovienfoRoomDatabase.getInstance(getApplicationContext()).movieDao().delete(recentMovies.get(0));
-                recentMovies.remove(recentMovies.get(0));
-
-                MovienfoRoomDatabase.getInstance(getApplicationContext()).movieDao().insert(movie);
-                recentMovies.add(movie);
-            }
-        }else{
-            Log.w(TAG, "Error");
-            Toast.makeText(getApplicationContext() , movie + " has been recently seen so it is not added to the recent list",
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
-
     @Override
-    public void sendDetails(Movie movie, int position) {
-        boolean contains = false;
-        for(Movie m : recentMovies){
-            if(m.getId().toString().equals(movie.getId().toString())) contains = true;
+    public boolean listContainsMovie(Movie movie, ArrayList<Movie> list) {
+        for(Movie m : list){
+            if(m.getId().toString().equals(movie.getId().toString()))
+                return true;
         }
-        if(!contains)addToRoomDatabase(movie);
-
-        Intent intent = new Intent(this, MovieDetailsActivity.class);
-        intent.putExtra("selectedMovie", movie);
-        intent.putParcelableArrayListExtra("favourites", new ArrayList(userFavorites));
-        intent.putParcelableArrayListExtra("watchlist", new ArrayList(userWatchlist));
-        startActivity(intent);
+        return false;
     }
 
-
+    @SuppressLint("StaticFieldLeak")
     public class MovieSearch extends AsyncTask<Void, Void, Void>{
 
         @RequiresApi(api = Build.VERSION_CODES.M)
@@ -573,19 +548,14 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
 
             final String movieSearchURL = "https://api.themoviedb.org/3/search/movie?api_key=" + apiKey + "&language=en-US&query="+ movieQuery +"&page=1&include_adult=false";
             searchResults = new ArrayList<>();
-
-            try{
-                if(NetworkUtils.networkStatus(HomeActivity.this)){
-                    searchResults = NetworkUtils.fetchData(movieSearchURL);
-                }else{
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(HomeActivity.this);
-                    dialog.setTitle(getString(R.string.title_network_alert));
-                    dialog.setMessage(getString(R.string.message_network_alert));
-                    dialog.setCancelable(false);
-                    dialog.show();
-                }
-            }catch (IOException e){
-                e.printStackTrace();
+            if(NetworkUtils.networkStatus(HomeActivity.this)){
+                searchResults = NetworkUtils.fetchData(movieSearchURL);
+            }else{
+                AlertDialog.Builder dialog = new AlertDialog.Builder(HomeActivity.this);
+                dialog.setTitle(getString(R.string.title_network_alert));
+                dialog.setMessage(getString(R.string.message_network_alert));
+                dialog.setCancelable(false);
+                dialog.show();
             }
             return null;
         }
@@ -594,16 +564,16 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
         protected void onPostExecute(Void  s) {
             super.onPostExecute(s);
             Intent searchIntent = new Intent(HomeActivity.this, MovieListActivity.class);
-            searchIntent.putExtra("list", new ArrayList(searchResults));
+            searchIntent.putParcelableArrayListExtra("searchResults", new ArrayList<>(searchResults));
+            searchIntent.putParcelableArrayListExtra("userFavs", new ArrayList<>(userFavorites));
+            searchIntent.putParcelableArrayListExtra("userWatch", new ArrayList<>(userWatchlist));
+            searchIntent.putParcelableArrayListExtra("recent", new ArrayList<>(recentMovies));
             searchIntent.putExtra("stringData", movieQuery);
-            searchIntent.putParcelableArrayListExtra("userFavs", new ArrayList(userFavorites));
-            searchIntent.putParcelableArrayListExtra("userWatch", new ArrayList(userWatchlist));
-            searchIntent.putParcelableArrayListExtra("recent", new ArrayList(recentMovies));
-
             startActivity(searchIntent);
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     public class FetchTheatres extends AsyncTask<Void, Void, Void> {
 
         @RequiresApi(api = Build.VERSION_CODES.M)
@@ -614,18 +584,14 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
 
             theaters = new ArrayList<>();
 
-            try{
-                if(NetworkUtils.networkStatus(HomeActivity.this)){
-                    theaters = NetworkUtils.fetchDataTheaters(nearbyTheatresURL);
-                }else{
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(HomeActivity.this);
-                    dialog.setTitle(getString(R.string.title_network_alert));
-                    dialog.setMessage(getString(R.string.message_network_alert));
-                    dialog.setCancelable(false);
-                    dialog.show();
-                }
-            }catch (IOException e){
-                e.printStackTrace();
+            if(NetworkUtils.networkStatus(HomeActivity.this)){
+                theaters = NetworkUtils.fetchDataTheaters(nearbyTheatresURL);
+            }else{
+                AlertDialog.Builder dialog = new AlertDialog.Builder(HomeActivity.this);
+                dialog.setTitle(getString(R.string.title_network_alert));
+                dialog.setMessage(getString(R.string.message_network_alert));
+                dialog.setCancelable(false);
+                dialog.show();
             }
             return null;
         }
@@ -636,15 +602,14 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
             progressBar.setVisibility(View.GONE);
             getSupportFragmentManager().beginTransaction().show(mapFragment).commit();
             mMap.addMarker(new MarkerOptions().position(new LatLng(lat ,lon)).title("Your location"));
-            LatLng origin = new LatLng(lat,lon);
             for (Theater th : theaters) {
-                LatLng dest = new LatLng(th.getLat(), th.getLon());
                   mMap.addMarker(new MarkerOptions().position(new LatLng(th.getLat(),th.getLon())).title(th.getName()));
               }
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat,lon), 14));
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     public class FetchMovies extends AsyncTask<Void, Void, Void>{
 
         @RequiresApi(api = Build.VERSION_CODES.M)
@@ -653,21 +618,17 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.OnIt
 
            fetchedMovies = new HashMap<>();
 
-            try{
-                if(NetworkUtils.networkStatus(HomeActivity.this)){
-                    fetchedMovies.put("upcoming", NetworkUtils.fetchData(upcomingMoviesURL));
-                    fetchedMovies.put("now_playing", NetworkUtils.fetchData(nowPlayingMoviesURL));
-                    fetchedMovies.put("top_rated", NetworkUtils.fetchData(topRatedURL));
-                    fetchedMovies.put("popular", NetworkUtils.fetchData(mostPopularURL));
-                }else{
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(HomeActivity.this);
-                    dialog.setTitle(getString(R.string.title_network_alert));
-                    dialog.setMessage(getString(R.string.message_network_alert));
-                    dialog.setCancelable(false);
-                    dialog.show();
-                }
-            }catch (IOException e){
-                e.printStackTrace();
+            if(NetworkUtils.networkStatus(HomeActivity.this)){
+                fetchedMovies.put("upcoming", NetworkUtils.fetchData(upcomingMoviesURL));
+                fetchedMovies.put("now_playing", NetworkUtils.fetchData(nowPlayingMoviesURL));
+                fetchedMovies.put("top_rated", NetworkUtils.fetchData(topRatedURL));
+                fetchedMovies.put("popular", NetworkUtils.fetchData(mostPopularURL));
+            }else{
+                AlertDialog.Builder dialog = new AlertDialog.Builder(HomeActivity.this);
+                dialog.setTitle(getString(R.string.title_network_alert));
+                dialog.setMessage(getString(R.string.message_network_alert));
+                dialog.setCancelable(false);
+                dialog.show();
             }
             return null;
         }

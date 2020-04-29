@@ -22,8 +22,8 @@
 
             <ImageView
                 android:id="@+id/movie_poster"
-                android:layout_width="@dimen/details_movie_poster_width_sw600dp"
-                android:layout_height="@dimen/details_movie_poster_height_sw600dp"
+                android:layout_width="@dimen/details_movie_poster_width_600dp"
+                android:layout_height="@dimen/details_movie_poster_height_600dp"
                 android:layout_marginBottom="@dimen/poster_margin_bottom"
                 android:contentDescription="@string/movie_thum_desc"
                 android:layout_marginEnd="@dimen/details_movie_poster_padding_right"
@@ -93,7 +93,7 @@
             android:layout_gravity="start"
             android:layout_marginTop="@dimen/margin_top_release"
             android:layout_marginStart="@dimen/margin_start"
-            android:textSize="@dimen/text_size_sideinfo_movie_sw600dp"
+            android:textSize="@dimen/text_size_section_title_sw600dp"
             android:textColor="@color/colorSecond"
             android:textIsSelectable="true" />
 
@@ -106,13 +106,13 @@
             android:layout_gravity="start"
             android:layout_marginBottom="@dimen/rating_margin_bottom"
             android:layout_marginTop="@dimen/rating_margin_bottom"
-            android:textSize="@dimen/text_size_sideinfo_movie_sw600dp"
+            android:textSize="@dimen/text_size_section_title_sw600dp"
             android:textColor="@color/colorSecond"
             android:textIsSelectable="true" />
 
         <TextView
             android:id="@+id/movie_overview"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:paddingLeft="@dimen/details_activity_horizontal_margin"
             android:paddingRight="@dimen/details_activity_horizontal_margin"

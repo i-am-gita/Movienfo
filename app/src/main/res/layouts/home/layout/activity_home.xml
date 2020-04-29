@@ -109,12 +109,15 @@
                 <ImageButton
                     android:id="@+id/find_theaters_button"
                     app:srcCompat="@drawable/icon_find_location"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:backgroundTintMode="src_over"
                     android:layout_gravity="center"
                     android:scaleType="fitXY"
                     android:layout_weight="25"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:contentDescription="@string/find_theaters_content_desc">
+                    android:contentDescription="@string/find_theaters_content_desc"
+                    tools:targetApi="lollipop">
                 </ImageButton>
 
             </LinearLayout>

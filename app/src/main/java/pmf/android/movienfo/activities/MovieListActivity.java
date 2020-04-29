@@ -1,12 +1,10 @@
 package pmf.android.movienfo.activities;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -19,7 +17,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,21 +28,15 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pmf.android.movienfo.R;
-import pmf.android.movienfo.activities.movie_details.MovieDetailsActivity;
-import pmf.android.movienfo.activities.movie_details.MovieDetailsFragment;
 import pmf.android.movienfo.adapters.MovieAdapter;
+import pmf.android.movienfo.fragments.MovieDetailsListFragment;
 import pmf.android.movienfo.model.Movie;
 import pmf.android.movienfo.utilities.MovienfoRoomDatabase;
+import pmf.android.movienfo.utilities.MovienfoUtilities;
 
-public class MovieListActivity extends AppCompatActivity implements MovieAdapter.OnItemClickListener, MovieAdapter.OnFragmentItemClickListener {
+public class MovieListActivity extends AppCompatActivity implements MovieInListChecker, ActionBarInitializer, MovieAdapter.OnItemClickListener, MovieAdapter.OnFragmentItemClickListener, MovieListInitializer {
 
     private static final String TAG = MovieListActivity.class.getSimpleName();
-
-    //Custom action bar elements
-    Toolbar toolbar;
-    EditText searchField;
-    ImageButton searchIcon;
-    ImageView homeIcon;
 
     @BindView(R.id.info_text)
     TextView infoTextview;
@@ -53,12 +44,10 @@ public class MovieListActivity extends AppCompatActivity implements MovieAdapter
     @BindView(R.id.movie_list_recycle)
     RecyclerView movieListRecycle;
 
-
-    private MovieAdapter mAdapter;
-    private float screenWidthDpi;
-
     private String movieListType;
-    private ArrayList<Movie> list;
+    private ArrayList<Movie> searchedMovieList;
+
+    //Firebase data
     private ArrayList<Movie> userFavorites;
     private ArrayList<Movie> userWatchlist;
 
@@ -74,65 +63,25 @@ public class MovieListActivity extends AppCompatActivity implements MovieAdapter
         setContentView(R.layout.activity_movies_list);
 
         setActionBarElements(Objects.requireNonNull(getSupportActionBar()));
+
         ButterKnife.bind(this);
 
-        Intent wantedData = getIntent();
-        list = wantedData.getParcelableArrayListExtra("list");
-        movieListType = wantedData.getStringExtra("stringData");
+        getDataFromHomeActivityIntent();
 
-        userFavorites = wantedData.getParcelableArrayListExtra("userFavs");
-        userWatchlist = wantedData.getParcelableArrayListExtra("userWatch");
-
-        recent = (ArrayList<Movie>) MovienfoRoomDatabase.getInstance(getApplicationContext()).movieDao().getAll();
-
-        switch (movieListType){
-            case "favourites":
-                infoTextview.setText("Personal favourites");
-                break;
-            case "watchlist":
-                infoTextview.setText("Watchlist");
-                break;
-            case "recent":
-                infoTextview.setText("Recently viewed movies");
-            default:
-                infoTextview.setText("Results for " + movieListType);
-                break;
-        }
-       movieListRecycle.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
-
-       movieListRecycle.setOnTouchListener((v, event) -> {
-            findViewById(R.id.overviewScroll).getParent().requestDisallowInterceptTouchEvent(false);
-            return false;
-        });
-        mAdapter = new MovieAdapter(this, list, R.layout.item_movie_list, movieListType);
-        mAdapter.setOnItemClickListener(this);
-
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int screenWidth = displayMetrics.widthPixels;
-        screenWidthDpi = convertPixelsToDp((float)screenWidth, this);
-
-        if(screenWidthDpi >= 600) mAdapter.setOnFragmentItemClickListener(this);
-        movieListRecycle.setAdapter(mAdapter);
-
-
+        initializeMoviesList();
     }
 
-    public static float convertPixelsToDp(float px, Context context){
-        return px / ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
-    }
-
-    private void setActionBarElements(ActionBar customActionBar) {
+    @Override
+    public void setActionBarElements(ActionBar customActionBar) {
         customActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         customActionBar.setDisplayShowCustomEnabled(true);
         customActionBar.setCustomView(R.layout.action_bar_custom);
         customActionBar.setBackgroundDrawable(new ColorDrawable(Color.BLACK));
 
         View view = Objects.requireNonNull(getSupportActionBar()).getCustomView();
-        toolbar = view.findViewById(R.id.home_toolbar);
-        searchIcon = view.findViewById(R.id.search_bar_hint_icon);
-        homeIcon = view.findViewById(R.id.icon_home);
-        searchField = view.findViewById(R.id.search_bar_edit_text);
+        ImageButton searchIcon = view.findViewById(R.id.search_bar_hint_icon);
+        ImageView homeIcon = view.findViewById(R.id.icon_home);
+        EditText searchField = view.findViewById(R.id.search_bar_edit_text);
         searchField.setVisibility(View.GONE);
 
         homeIcon.setOnClickListener(v -> {
@@ -144,71 +93,103 @@ public class MovieListActivity extends AppCompatActivity implements MovieAdapter
         searchField.setVisibility(View.GONE);
     }
 
+    private void getDataFromHomeActivityIntent(){
+        Intent wantedData = getIntent();
+        searchedMovieList = wantedData.getParcelableArrayListExtra("searchResults");
+        userFavorites = wantedData.getParcelableArrayListExtra("userFavs");
+        userWatchlist = wantedData.getParcelableArrayListExtra("userWatch");
+        recent = (ArrayList<Movie>) MovienfoRoomDatabase.getInstance(getApplicationContext()).movieDao().getAll();
+        movieListType = wantedData.getStringExtra("stringData");
+    }
+
+    @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
+    @Override
+    public void initializeMoviesList() {
+        movieListRecycle.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
+
+        //So 2 scroll views can scroll without messing with one-another
+        movieListRecycle.setOnTouchListener((v, event) -> {
+            findViewById(R.id.overviewScroll).getParent().requestDisallowInterceptTouchEvent(false);
+            return false;
+        });
+        //Inflating recycle on MovieListActivity with specific list type.
+        MovieAdapter mAdapter;
+        switch (movieListType){
+            case "favourites":
+                mAdapter = new MovieAdapter(this, userFavorites, R.layout.item_movie_list, movieListType);
+                infoTextview.setText("Personal favourites");
+                break;
+            case "watchlist":
+                mAdapter = new MovieAdapter(this, userWatchlist, R.layout.item_movie_list, movieListType);
+                infoTextview.setText("Watchlist");
+                break;
+            case "recent":
+                mAdapter = new MovieAdapter(this, recent, R.layout.item_movie_list, movieListType);
+                infoTextview.setText("Recently viewed movies");
+                break;
+            default:
+                mAdapter = new MovieAdapter(this, searchedMovieList, R.layout.item_movie_list, movieListType);
+                infoTextview.setText("Results for " + movieListType);
+                break;
+        }
+        if(MovienfoUtilities.showMovieOnCurrentActivity(this, (float) getResources().getDisplayMetrics().densityDpi)){
+            mAdapter.setOnFragmentItemClickListener(this);
+        }
+        mAdapter.setOnItemClickListener(this);
+        movieListRecycle.setAdapter(mAdapter);
+    }
+
+    //Interface method that has 2 types of usage:
+    // 1. Showing movie details in MovieDetailsActivity using MovieDetailsFragment
+    // 2. Removing selected movie from favourites list or from watchlist
     @Override
     public void sendDetails(Movie movie, int position) {
 
-        if(position == -100){
+        //Value -100 is assigned to the position parameter when selected movie should be opened in another activity instead of displaying it as a fragment
+        //on the same activity movie is selected (MovieListActivity). This happens when screen width in dpi is less then 600dp
+        if(position == -100 || (!movieListType.equals("favourites") && !movieListType.equals("watchlist"))){
             Intent movieIntent = new Intent(this, MovieDetailsActivity.class);
             movieIntent.putExtra("selectedMovie", movie);
             movieIntent.putParcelableArrayListExtra("favourites", userFavorites);
             movieIntent.putParcelableArrayListExtra("watchlist", userWatchlist);
             startActivity(movieIntent);
+
+        }else if(movieListType.equals("favourites")){
+            FirebaseDatabase.getInstance().getReference().child("favorites").child(movie.getId().toString()).removeValue();
+            userFavorites.remove(movie);
+            Toast.makeText(getApplicationContext(), movie.getOriginalTitle() + " removed from favourites!", Toast.LENGTH_SHORT).show();
+            refreshMovieList();
+
         }else {
-            switch (movieListType) {
-                case "favourites":
-                    FirebaseDatabase.getInstance().getReference().child("favorites").child(movie.getId().toString()).removeValue();
-                    list.remove(movie);
-                    Toast.makeText(getApplicationContext(), movie.getOriginalTitle() + " removed from favourites!", Toast.LENGTH_SHORT).show();
-                    refreshMovieList();
-                    break;
-                case "watchlist":
-                    FirebaseDatabase.getInstance().getReference().child("watchlist").child(movie.getId().toString()).removeValue();
-                    list.remove(movie);
-                    Toast.makeText(getApplicationContext(), movie.getOriginalTitle() + " removed from watchlist!", Toast.LENGTH_SHORT).show();
-                    refreshMovieList();
-                    break;
-                default:
-                    Intent movieIntent = new Intent(this, MovieDetailsActivity.class);
-                    movieIntent.putExtra("selectedMovie", movie);
-                    movieIntent.putParcelableArrayListExtra("favourites", userFavorites);
-                    movieIntent.putParcelableArrayListExtra("watchlist", userWatchlist);
-                    startActivity(movieIntent);
-                    break;
-            }
+            FirebaseDatabase.getInstance().getReference().child("watchlist").child(movie.getId().toString()).removeValue();
+            userWatchlist.remove(movie);
+            Toast.makeText(getApplicationContext(), movie.getOriginalTitle() + " removed from watchlist!", Toast.LENGTH_SHORT).show();
+            refreshMovieList();
         }
-}
+    }
+
+    //Interface method which is responsible for displaying movie details on the same activity in which user selected that specific movie(MovieListActivity)
+    //Another duty of this method is adding movie to recently seen list if the conditions are fulfilled
 
     @Override
     public void sendData(Movie movie, int position) {
-            boolean contains = false;
-            for(Movie m : recent){
-                if(m.getId().toString().equals(movie.getId().toString())) contains = true;
-            }
-            if(!contains)addToRoomDatabase(movie);
 
-            if(screenWidthDpi> 600){
-                Bundle arguments = new Bundle();
-                arguments.putParcelable("selectedMovie", movie);
-                arguments.putBoolean("inFavourite", isFavorite(movie));
-                arguments.putBoolean("inWatchlist", inWatchlist(movie));
-                arguments.putParcelableArrayList("watchlist",userWatchlist);
-                arguments.putParcelableArrayList("favourites",userFavorites);
+        if(!listContainsMovie(movie,recent)) addToRoomDatabase(movie);
 
-                MovieDetailsFragment fragment = new MovieDetailsFragment();
-                fragment.setArguments(arguments);
-                fragment.setArguments(arguments);
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.movie_details_fragment, fragment)
-                        .commit();
-            }else{
-                sendDetails(movie,position);
-            }
+        Bundle arguments = new Bundle();
+        arguments.putParcelable("selectedMovie", movie);
+        arguments.putBoolean("inFavourite", listContainsMovie(movie, userFavorites));
+        arguments.putBoolean("inWatchlist", listContainsMovie(movie,userWatchlist));
 
-
-
+        MovieDetailsListFragment fragment = new MovieDetailsListFragment();
+        fragment.setArguments(arguments);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.movie_details_fragment, fragment)
+                .commit();
 
     }
 
+    //RoomDatabase is responsible for saving 10 movies that are recently seen. When 11th movie is seen, first movie added to the database is deleted, and 11th is then added to the end of list
     private void addToRoomDatabase(Movie movie){
         if(!recent.contains(movie)){
             if(recent.size() == 10){
@@ -226,30 +207,22 @@ public class MovieListActivity extends AppCompatActivity implements MovieAdapter
                     Toast.LENGTH_SHORT).show();
         }
     }
-
+    //If user removes movie from watchlist or list of favourites this method is called in order to refresh current activity and update details about lists
     private void refreshMovieList(){
         Intent favIntent = new Intent(this, MovieListActivity.class);
-        favIntent.putParcelableArrayListExtra("list", list);
-        favIntent.putParcelableArrayListExtra("recent",recent);
         favIntent.putParcelableArrayListExtra("userFavs",userFavorites);
         favIntent.putParcelableArrayListExtra("userWatch",userWatchlist);
         favIntent.putExtra("stringData", movieListType);
         finish();
         startActivity(favIntent);
     }
-    private boolean isFavorite(Movie movie){
-        for(Movie m : userFavorites){
-            if(m.getId().toString().equals(movie.getId().toString()))return true;
+
+    @Override
+    public boolean listContainsMovie(Movie movie, ArrayList<Movie> list) {
+        for(Movie m : list){
+            if(m.getId().toString().equals(movie.getId().toString()))
+                return true;
         }
         return false;
     }
-
-    private boolean inWatchlist(Movie movie){
-        for(Movie m : userWatchlist){
-            if(m.getId().toString().equals(movie.getId().toString()))return true;
-        }
-        return false;
-    }
-
-
 }

@@ -21,9 +21,10 @@
             android:paddingRight="@dimen/details_activity_horizontal_margin">
 
             <ImageView
+                android:contentDescription="@string/movie_thum_desc"
                 android:id="@+id/movie_poster"
-                android:layout_width="@dimen/details_movie_poster_width"
-                android:layout_height="@dimen/details_movie_poster_height"
+                android:layout_width="@dimen/details_movie_poster_width_land"
+                android:layout_height="@dimen/details_movie_poster_height_land"
                 android:layout_marginBottom="@dimen/poster_margin_bottom"
                 android:layout_marginEnd="@dimen/details_movie_poster_padding_right"
                 android:scaleType="fitXY" />
@@ -39,6 +40,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/detail_title_bottom_margin"
                     android:layout_marginStart="@dimen/detail_title_left_padding"
+                    android:layout_gravity="center"
                     android:fontFamily="@font/aldrich"
                     android:textColor="@color/colorSecond"
                     android:textSize="@dimen/text_button_size_land"
@@ -51,13 +53,15 @@
                     android:id="@+id/favorite_button"
                     android:background="@drawable/button_nearby_theaters"
                     android:textColor="@color/colorSecond"
-                    android:lineSpacingExtra="@dimen/text_spacing_button_land"
-                    android:textSize="@dimen/text_button_size_land"
+                    android:lineSpacingExtra="@dimen/text_size_overview"
+                    android:textSize="@dimen/text_button_size"
                     android:layout_marginBottom="@dimen/fav_button_margin_bottom"
                     android:layout_marginTop="@dimen/fav_button_margin_bottom"
+                    android:padding="@dimen/button_padding"
                     android:fontFamily="@font/aldrich"
                     android:textAlignment="center"
-                    android:layout_width="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_width="@dimen/button_size"
                     android:layout_height="wrap_content">
                 </Button>
 
@@ -65,11 +69,15 @@
                     android:id="@+id/watchlist_button"
                     android:background="@drawable/button_nearby_theaters"
                     android:textColor="@color/colorSecond"
-                    android:lineSpacingExtra="@dimen/text_spacing_button_land"
-                    android:textSize="@dimen/text_button_size_land"
+                    android:lineSpacingExtra="@dimen/text_size_overview"
+                    android:textSize="@dimen/text_button_size"
+                    android:layout_marginBottom="@dimen/fav_button_margin_bottom"
+                    android:layout_marginTop="@dimen/fav_button_margin_bottom"
                     android:fontFamily="@font/aldrich"
+                    android:padding="@dimen/button_padding"
+                    android:layout_gravity="center"
                     android:textAlignment="center"
-                    android:layout_width="wrap_content"
+                    android:layout_width="@dimen/button_size"
                     android:layout_height="wrap_content">
                 </Button>
 
@@ -85,35 +93,27 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/aldrich"
             android:layout_gravity="start"
-            android:layout_marginTop="@dimen/margin_top_release"
-            android:layout_marginStart="@dimen/margin_start"
-            android:textSize="@dimen/text_size_sideinfo_movie_land"
-            android:textColor="@color/colorSecond"
+            android:layout_margin="@dimen/margin_top_release"
+            android:textSize="@dimen/text_size_sideinfo_movie"            android:textColor="@color/colorSecond"
             android:textIsSelectable="true" />
 
         <TextView
             android:id="@+id/movie_user_rating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_start"
             android:fontFamily="@font/aldrich"
             android:layout_gravity="start"
-            android:layout_marginBottom="@dimen/rating_margin_bottom"
-            android:layout_marginTop="@dimen/rating_margin_bottom"
-            android:textSize="@dimen/text_size_sideinfo_movie_land"
-            android:textColor="@color/colorSecond"
+            android:layout_margin="@dimen/margin_top_release"
+            android:textSize="@dimen/text_size_sideinfo_movie"            android:textColor="@color/colorSecond"
             android:textIsSelectable="true" />
 
         <TextView
             android:id="@+id/movie_overview"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:paddingLeft="@dimen/details_activity_horizontal_margin"
-            android:paddingRight="@dimen/details_activity_horizontal_margin"
-            android:paddingTop="@dimen/movie_overview_padding_top"
+            android:layout_margin="@dimen/margin_top_release"
             android:fontFamily="@font/aldrich"
-            android:textSize="@dimen/text_size_sideinfo_movie_land"
-            android:textColor="@color/colorSecond"
+            android:textSize="@dimen/text_size_sideinfo_movie"            android:textColor="@color/colorSecond"
             android:textIsSelectable="true" />
 
     </LinearLayout>

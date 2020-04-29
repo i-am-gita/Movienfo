@@ -112,13 +112,17 @@
                     android:contentDescription="@string/find_theaters_content_desc"
                     app:srcCompat="@drawable/icon_find_location"
                     android:scaleType="fitXY"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:backgroundTintMode="src_over"
                     android:textColor="@color/colorPrimary"
                     android:lineSpacingExtra="@dimen/text_size_overview"
                     android:layout_gravity="center"
                     android:fontFamily="@font/aldrich"
-                    android:layout_width="0dp"
-                    android:layout_weight="25"
-                    android:layout_height="match_parent">
+                    android:layout_width="@dimen/zero"
+                    android:layout_weight="20"
+                    android:layout_height="140dp"
+                    android:layout_marginStart="@dimen/margin_top_map"
+                    tools:ignore="UnusedAttribute">
                 </ImageButton>
 
             </LinearLayout>

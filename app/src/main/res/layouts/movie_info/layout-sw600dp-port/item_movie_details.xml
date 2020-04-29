@@ -26,6 +26,7 @@
                 android:layout_height="@dimen/details_movie_poster_height_sw600dp"
                 android:layout_marginBottom="@dimen/poster_margin_bottom"
                 android:contentDescription="@string/movie_thum_desc"
+                android:background="@drawable/image_placeholder"
                 android:layout_marginEnd="@dimen/details_movie_poster_padding_right"
                 android:scaleType="fitXY" />
 
@@ -36,6 +37,7 @@
 
                 <TextView
                     android:id="@+id/movie_title"
+                    android:layout_gravity="center"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/detail_title_bottom_margin"
@@ -111,7 +113,7 @@
 
         <TextView
             android:id="@+id/movie_overview"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:paddingLeft="@dimen/details_activity_horizontal_margin"
             android:paddingRight="@dimen/details_activity_horizontal_margin"

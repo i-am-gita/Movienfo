@@ -39,6 +39,7 @@
 
         <ImageButton
             android:id="@+id/search_bar_hint_icon"
+            android:layout_marginEnd="@dimen/margin_start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/icon_search"

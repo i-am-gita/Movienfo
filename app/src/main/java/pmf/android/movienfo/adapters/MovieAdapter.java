@@ -3,9 +3,11 @@ package pmf.android.movienfo.adapters;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -24,10 +26,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import pmf.android.movienfo.R;
 import pmf.android.movienfo.model.Movie;
+import pmf.android.movienfo.utilities.MovienfoUtilities;
 
 public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private final static String LOG_TAG = MovieAdapter.class.getSimpleName();
     private final static int HOME_MOVIE_TYPE = 1;
     private final static int LIST_MOVIE_TYPE = 2;
 
@@ -101,27 +103,53 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
         final Movie movie = movies.get(position);
+
+        //Displaying movies in recycles at HomeActivity
         if(isHomeMovieType(layoutId)){
             HomeMovieViewHolder holder = (HomeMovieViewHolder) viewHolder;
             holder.bind(movie);
             holder.mMovieThumb.setOnClickListener(v -> onItemClickListener.sendDetails(movie, holder.getAdapterPosition()));
-        }else{
+
+        } else{
             ListMovieViewHolder holder = (ListMovieViewHolder) viewHolder;
+
+            //Displaying movie details in MovieListActivity
+            if(showMovieOnCurrentActivity()){
+                holder.mMovieOverview.setVisibility(View.GONE);
+                holder.mMovieTitle.setVisibility(View.GONE);
+                holder.mMovieVote.setVisibility(View.GONE);
+            }
+            //Displaying movie details in MovieDetailsActivity
+            else{
+                holder.mMovieOverview.setText(movie.getOverview());
+            }
             holder.bind(movie);
+
+            //If lists are not favorites or watchlist, button for removing shouldn't be desplayed
             if(!listType.equals("favourites") && !listType.equals("watchlist")){
                 holder.removeFromList.setVisibility(View.GONE);
             }else{
                 holder.removeFromList.setOnClickListener(remove -> onItemClickListener.sendDetails(movie, holder.getAdapterPosition()));
             }
-
+            //When onFragmentItemClickListener is NOT NULL that means that movie should be displayed on the current activity
             if(onFragmentItemClickListener != null) {
                 holder.mMoviePoster.setOnClickListener(show -> onFragmentItemClickListener.sendData(movie,holder.getAdapterPosition()));
                 holder.mMovieOverview.setVisibility(View.GONE);
-            }else{
+            }
+            //If onFragmentItemClickListener is null, that means that movie details should be opened in another activity
+            else{
                 holder.mMoviePoster.setOnClickListener(go -> onItemClickListener.sendDetails(movie,-100));
             }
 
         }
+    }
+
+   private boolean showMovieOnCurrentActivity(){
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        WindowManager wm = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+        Objects.requireNonNull(wm).getDefaultDisplay().getMetrics(displayMetrics);
+
+        return (displayMetrics.widthPixels / (context.getResources().getDisplayMetrics().densityDpi/ DisplayMetrics.DENSITY_DEFAULT)) > 600;
     }
 
     @Override
@@ -166,12 +194,10 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             overviewScroll.setOnTouchListener((v, event) -> { v.getParent().requestDisallowInterceptTouchEvent(true);
                 return false;
             });
-            String[] posterPathHttp = Objects.requireNonNull(movie.getPosterPath()).split(":");
-            String posterPathHttps = posterPathHttp[0] + "s:" + posterPathHttp[1];
             Picasso.get()
-                    .load(posterPathHttps)
+                    .load(MovienfoUtilities.parseUrl(Objects.requireNonNull(movie.getPosterPath())))
                     .config(Bitmap.Config.RGB_565)
-                    .placeholder(R.drawable.image_placeholder_movie_lists)
+                    .placeholder(R.drawable.image_placeholder)
                     .into(mMoviePoster, new Callback() {
                         @Override
                         public void onSuccess() {
@@ -203,11 +229,8 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             String releaseYear = formatDate(movie.getReleaseDate());
             mMovieRelease.setText(releaseYear);
 
-            String[] posterPathHttp = Objects.requireNonNull(movie.getPosterPath()).split(":");
-            String posterPathHttps = posterPathHttp[0] + "s:" + posterPathHttp[1];
-
             Picasso.get()
-                    .load(posterPathHttps)
+                    .load(MovienfoUtilities.parseUrl(Objects.requireNonNull(movie.getPosterPath())))
                     .config(Bitmap.Config.RGB_565)
                     .placeholder(R.drawable.image_placeholder)
                     .into(mMovieThumb, new Callback() {

@@ -11,7 +11,6 @@ import pmf.android.movienfo.model.Movie;
 @Database(entities = {Movie.class}, version = 1, exportSchema = false)
 public abstract class MovienfoRoomDatabase extends RoomDatabase {
 
-    private static final String DB_NAME = "recentMovies.db";
     private static MovienfoRoomDatabase instance;
     public abstract MovieDao movieDao();
 
@@ -20,9 +19,5 @@ public abstract class MovienfoRoomDatabase extends RoomDatabase {
             instance = Room.databaseBuilder(context.getApplicationContext(), MovienfoRoomDatabase.class, "recentMovies").allowMainThreadQueries().build();
         }
         return instance;
-    }
-
-    public static void destroyInstance(){
-        instance = null;
     }
 }

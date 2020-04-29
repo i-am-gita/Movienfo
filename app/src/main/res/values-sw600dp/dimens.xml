@@ -82,4 +82,10 @@
     <dimen name="start_size_sw600dp">90dp</dimen>
     <dimen name="button_size_sw600dp">300dp</dimen>
     <dimen name="button_size_height_sw600dp">90dp</dimen>
+    <dimen name="star_size_land">45dp</dimen>
+    <dimen name="button_padding">8dp</dimen>
+    <dimen name="button_size">130dp</dimen>
+    <dimen name="find_button_width">170dp</dimen>
+    <dimen name="details_movie_poster_width_600dp">330dp</dimen>
+    <dimen name="details_movie_poster_height_600dp">460dp</dimen>
 </resources>

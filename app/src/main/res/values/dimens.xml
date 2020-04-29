@@ -13,8 +13,10 @@
     <!--Movie Details dimensions-->
     <dimen name="details_activity_vertical_margin">16dp</dimen>
     <dimen name="details_activity_horizontal_margin">16dp</dimen>
-    <dimen name="details_movie_poster_width">140dp</dimen>
-    <dimen name="details_movie_poster_height">210dp</dimen>
+    <dimen name="details_movie_poster_width">160dp</dimen>
+    <dimen name="details_movie_poster_height">230dp</dimen>
+    <dimen name="details_movie_poster_width_land">190dp</dimen>
+    <dimen name="details_movie_poster_height_land">260dp</dimen>
     <dimen name="details_movie_poster_padding_right">16dp</dimen>
     <dimen name="detail_title_left_padding">4dp</dimen>
     <dimen name="detail_title_bottom_margin">4dp</dimen>
@@ -80,7 +82,13 @@
     <dimen name="text_size_sideinfo_movie_sw600dp">30sp</dimen>
     <dimen name="fav_button_padding_sw600dp">20dp</dimen>
     <dimen name="remove_button_size_sw600dp">60dp</dimen>
-    <dimen name="start_size_sw600dp">90dp</dimen>
+    <dimen name="start_size_sw600dp">35dp</dimen>
     <dimen name="button_size_sw600dp">300dp</dimen>
     <dimen name="button_size_height_sw600dp">90dp</dimen>
+    <dimen name="star_size_land">60dp</dimen>
+    <dimen name="button_padding">8dp</dimen>
+    <dimen name="button_size">130dp</dimen>
+    <dimen name="find_button_width">170dp</dimen>
+    <dimen name="details_movie_poster_width_600dp">330dp</dimen>
+    <dimen name="details_movie_poster_height_600dp">460dp</dimen>
 </resources>

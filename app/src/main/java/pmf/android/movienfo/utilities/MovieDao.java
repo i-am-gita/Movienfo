@@ -15,9 +15,6 @@ public interface MovieDao {
     @Query("SELECT * FROM movie")
     List<Movie> getAll();
 
-    @Query("SELECT * FROM movie WHERE id == (:movieId) ")
-    Movie getMovie(long movieId);
-
     @Insert
     void insert(Movie movie);
 

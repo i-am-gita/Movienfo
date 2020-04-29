@@ -5,6 +5,8 @@ import android.net.ConnectivityManager;
 import android.os.Build;
 import android.util.Log;
 
+import androidx.annotation.RequiresApi;
+
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
 
@@ -19,8 +21,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import androidx.annotation.RequiresApi;
 import pmf.android.movienfo.model.Movie;
 import pmf.android.movienfo.model.Theater;
 
@@ -28,7 +30,7 @@ public class NetworkUtils {
 
     private static final String TAG = NetworkUtils.class.getSimpleName();
 
-    public static List<Movie> fetchData(String url) throws IOException{
+    public static List<Movie> fetchData(String url) {
         List<Movie> movies = new ArrayList<>();
         try{
             URL new_url = new URL(url);
@@ -45,7 +47,7 @@ public class NetworkUtils {
         return movies;
     }
 
-    public static List<Theater> fetchDataTheaters(String url) throws IOException{
+    public static List<Theater> fetchDataTheaters(String url){
         List<Theater> theaters = new ArrayList<>();
         try{
             URL newUrl = new URL(url);
@@ -115,9 +117,6 @@ public class NetworkUtils {
     public static Boolean networkStatus(Context context){
         ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        if(manager.getActiveNetwork() != null)
-            return true;
-        else
-            return false;
+        return Objects.requireNonNull(manager).getActiveNetwork() != null;
     }
 }

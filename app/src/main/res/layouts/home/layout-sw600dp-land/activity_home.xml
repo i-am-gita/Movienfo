@@ -109,6 +109,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/map_fragment_layout_height_sw600dp"
+                android:layout_marginTop="@dimen/margin_top_map"
                 android:orientation="vertical"
                 android:weightSum="100" >
 
@@ -129,9 +130,12 @@
                     app:srcCompat="@drawable/icon_find_location"
                     android:scaleType="fitXY"
                     android:layout_gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_weight="35"
-                    android:layout_height="@dimen/zero">
+                    android:backgroundTint="@color/colorPrimary"
+                    android:backgroundTintMode="src_over"
+                    android:layout_width="@dimen/find_button_width"
+                    android:layout_weight="18"
+                    android:layout_height="@dimen/zero"
+                    tools:ignore="UnusedAttribute">
                 </ImageButton>
 
             </LinearLayout>

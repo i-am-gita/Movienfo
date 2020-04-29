@@ -23,4 +23,5 @@
     <string name="movie_thum_desc">Movie thumb</string>
     <string name="remove_button_desc">Remove</string>
     <string name="star_desc">Star</string>
+    <string name="backrop_desc">Image backdrop</string>
 </resources>

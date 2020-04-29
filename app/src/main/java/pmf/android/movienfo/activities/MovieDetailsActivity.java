@@ -1,4 +1,4 @@
-package pmf.android.movienfo.activities.movie_details;
+package pmf.android.movienfo.activities;
 
 import android.graphics.Color;
 import android.os.Build;
@@ -22,9 +22,10 @@ import java.util.Objects;
 
 import butterknife.ButterKnife;
 import pmf.android.movienfo.R;
+import pmf.android.movienfo.fragments.MovieDetailsListFragment;
 import pmf.android.movienfo.model.Movie;
 
-public class MovieDetailsActivity extends AppCompatActivity {
+public class MovieDetailsActivity extends AppCompatActivity implements MovieInListChecker {
 
     public static final String TAG = MovieDetailsActivity.class.getSimpleName();
 
@@ -39,28 +40,45 @@ public class MovieDetailsActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).hide();
 
         ButterKnife.bind(this);
+
         checkBuildVersion();
 
+        movieFragmentInitialization(savedInstanceState);
+    }
+
+    private void movieFragmentInitialization(Bundle savedInstanceState){
         if(savedInstanceState == null){
             Bundle arguments = new Bundle();
             Movie selected = getIntent().getParcelableExtra("selectedMovie");
-            arguments.putParcelable("selectedMovie", selected);
             userWatchlist = getIntent().getParcelableArrayListExtra("watchlist");
             userFavorites = getIntent().getParcelableArrayListExtra("favourites");
 
-
             manageDatabase(FirebaseDatabase.getInstance().getReference().child("watchlist"), FirebaseDatabase.getInstance().getReference().child("favourites"));
 
-            arguments.putBoolean("inFavourite", isFavorite(selected));
-            arguments.putBoolean("inWatchlist", inWatchlist(selected));
-            arguments.putParcelableArrayList("watchlist",userWatchlist);
-            arguments.putParcelableArrayList("favourites",userFavorites);
+            arguments.putParcelable("selectedMovie", selected);
+            arguments.putBoolean("inFavourite", listContainsMovie(selected, userFavorites));
+            arguments.putBoolean("inWatchlist", listContainsMovie(selected, userWatchlist));
 
-            MovieDetailsFragment fragment = new MovieDetailsFragment();
+            MovieDetailsListFragment fragment = new MovieDetailsListFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.movie_detail_container, fragment)
                     .commit();
+        }
+    }
+
+    @Override
+    public boolean listContainsMovie(Movie movie, ArrayList<Movie> list) {
+        for(Movie m : list){
+            if(m.getId().toString().equals(movie.getId().toString()))
+                return true;
+        }
+        return false;
+    }
+
+    protected void checkBuildVersion(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
     }
 
@@ -83,9 +101,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 Log.d(TAG, "Deleted movie from watchlist: " + dataSnapshot.getKey());
-
-                Movie wMovie = dataSnapshot.getValue(Movie.class);
-                if(userWatchlist.contains(wMovie)) userWatchlist.remove(wMovie);
+                userWatchlist.remove(dataSnapshot.getValue(Movie.class));
             }
 
             @Override
@@ -101,15 +117,11 @@ public class MovieDetailsActivity extends AppCompatActivity {
             }
         };
 
-        watchRef.addChildEventListener(watchlistEventListener);
-
         ChildEventListener favoritesEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Log.d(TAG, "Added new favorite movie: " + dataSnapshot.getKey());
-
-                Movie fMovie = dataSnapshot.getValue(Movie.class);
-                userFavorites.add(fMovie);
+                userFavorites.add(dataSnapshot.getValue(Movie.class));
             }
 
             @Override
@@ -123,7 +135,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 Log.d(TAG, "Deleted favorite movie: " + dataSnapshot.getKey());
 
                 Movie fMovie = dataSnapshot.getValue(Movie.class);
-                if(userFavorites.contains(fMovie)) userFavorites.remove(fMovie);
+                userFavorites.remove(fMovie);
             }
 
             @Override
@@ -139,27 +151,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
             }
         };
 
+        watchRef.addChildEventListener(watchlistEventListener);
         favRef.addChildEventListener(favoritesEventListener);
-    }
-
-    private boolean isFavorite(Movie movie){
-       for(Movie m : userFavorites){
-           if(m.getId().toString().equals(movie.getId().toString()))return true;
-       }
-       return false;
-    }
-
-    private boolean inWatchlist(Movie movie){
-        for(Movie m : userWatchlist){
-            if(m.getId().toString().equals(movie.getId().toString()))return true;
-        }
-        return false;
-    }
-
-    protected void checkBuildVersion(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(Color.TRANSPARENT);
-        }
     }
 }
 
