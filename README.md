@@ -23,15 +23,10 @@
   - Backdrop movie image
   <br>
   <li>Search for a specific movie: </li>
-  <br> 
   - Input movie title in custom made action bar
-  <br>
   <li>Add/Remove movie to/from the list of personal favourites</li>
-  <br>
   <li>Add/Remove movie to/from the watchlist</li>
-  <br>
   <li>See list of 10 most recent movies</li>
-   <br>
   <li>Find exact location of theaters that are in 10 mile radius<li>
 </ul>
 
