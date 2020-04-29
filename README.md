@@ -4,14 +4,13 @@
 <h3>Things you can do:</h3>
 
 <ul style="list-style-type:disc;">
-  <li>See watchlist and list of favourite trending, most popular, top rated and now playing movies. 
+  <li>See watchlist and list of favourite trending, most popular, top rated and now playing movies</li>
   <br>
-  Lists are represented as a few horizontal scroll bar lists.
+  - Lists are represented as a few horizontal scroll bar lists.
   <br>
   - Movies are showed as posters below which relase year is written.
   <br>
   <li>See movie details, which include:</li>
-  <br> 
   - Movie title
   <br> 
   - Release date
