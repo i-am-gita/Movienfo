@@ -41,6 +41,15 @@
   <li>Fetching location of nearest theaters(Google Places API)</li>
 </ul>
 
+<h3>Used libraries:</h3>
+
+<ul style="list-style-type:disc;">
+  <li>Picasso v2.71828 - For manipulating backdrop and poster images</li>
+  <li>Butterknife v10.2.1 - For binding elements</li>
+  <li>Guava v28.2 - For parsing JSON objects</li>
+  <li>Keyboarvisibilityevent v3.0.0-RC2 - For listening keyboard events(show/hide). This library uses available screen width for determinating if keyboard is present or not. This was needed in order for action bar to work as desired.</li>
+</ul>
+
 <h3>Possible future upgrades:</h3>
 <br>
 <ul style="list-style-type:disc;">
